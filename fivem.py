@@ -15,8 +15,8 @@ class Server_info():
 
     def send_request(self):
         try:
-            req_players = (requests.get(f'http://{self.ip}/players.json',timeout=2)).json()
-            req_server_info = (requests.get(f'http://{self.ip}/info.json',timeout=2)).json()
+            req_players = (requests.get(f'http://{self.ip}/players.json')).json()
+            req_server_info = (requests.get(f'http://{self.ip}/info.json')).json()
             if req_server_info:
                 
                 for item in req_server_info:
@@ -108,12 +108,11 @@ async def on_ready():
     print('Connected')
     
 
-      
+    
     while True:
         for guild in client.guilds:
             guild = guild
             guild_id = guild.id
-            
             
             try:
                      
@@ -123,38 +122,44 @@ async def on_ready():
                 req_json,max_players = server.send_request()[0],server.send_request()[1]
 
             except:
-                continue
+                print(123)
             try:
                 
-                if len(info_channels[0]) > 5:
+                if len(info_channels[0]) and len(info_channels[1]) > 5:
                 
-                    channel0,msg0,msg1=get_status_info(guild_id) #stopped here work need to use -channel before 
+                    channel0,channel1,msg0,msg1=get_status_info(guild_id) #stopped here work need to use -channel before 
 
                     channel = guild.get_channel(int(channel0)) #ID of channel
                     msg = await channel.fetch_message(int(msg0)) #ID of the message
 
-                    information_channel = guild.get_channel(int(channel0)) #ID of channel
+                    information_channel = guild.get_channel(int(channel1)) #ID of channel
                     information_msg = await information_channel.fetch_message(int(msg1)) #ID of the 
                     
-                    
                     if req_json is None: 
-                            
-                            #Offline
-                            #await client.change_presence(status=discord.Status.dnd, activity=discord.Activity(type=discord.ActivityType.watching, name=f"yy"))
-                            #await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Activity(type=discord.ActivityType.watching, name=f"🐌[OFF] xx")) 
-                            embed = discord.Embed(title="``👥`` ``Players: [0/0]``\n``🔴`` ``Status`` - Server Offline ",description="", colour=discord.Colour.red())
-                            embed.set_thumbnail(url=f"{icon}")
-                            embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
-                            embed.set_footer(text=f'{title_name} Last Updated: Today · {str(datetime.now())[10:-10]}', icon_url=f"{icon}")
-                            await msg.edit(embed=embed)
-                            
+                            try:
+                                #Offline
+                                #await client.change_presence(status=discord.Status.dnd, activity=discord.Activity(type=discord.ActivityType.watching, name=f"yy"))
+                                #await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Activity(type=discord.ActivityType.watching, name=f"🐌[OFF] xx")) 
+                                embed = discord.Embed(title="``👥`` ``Players: [0/0]``\n``🔴`` ``Status`` - Server Offline ",description="", colour=discord.Colour.red())
+                                embed.set_thumbnail(url=f"{icon}")
+                                embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
+                                embed.set_footer(text=f'{title_name} Last Updated: Today · {str(datetime.now())[10:-10]}', icon_url=f"{icon}")
+                                await msg.edit(embed=embed)
+                                
 
-                            ##################################
-                            embed = discord.Embed(title=f"**{title_name} information**", colour=discord.Colour.red())
-                            embed.set_thumbnail(url=f"{icon}")
-                            embed.set_footer(text=f'{title_name} Last Updated: Today · {str(datetime.now())[10:-10]}', icon_url=f"{icon}")
-                            embed.add_field(name=f"``🔴`` ``Status``\n``👥`` ``Players: Server Offline ``", value=f"``🌐`` ``IP-❌``\n  ")
-                            await information_msg.edit(embed=embed)
+                                ##################################
+                                embed = discord.Embed(title=f"**{title_name} information**", colour=discord.Colour.red())
+                                embed.set_thumbnail(url=f"{icon}")
+                                embed.set_footer(text=f'{title_name} Last Updated: Today · {str(datetime.now())[10:-10]}', icon_url=f"{icon}")
+                                embed.add_field(name=f"``🔴`` ``Status``\n``👥`` ``Players: Server Offline ``", value=f"``🌐`` ``IP-❌``\n  ")
+                                await information_msg.edit(embed=embed)
+                            except discord.errors.NotFound:
+                                print(1)
+                            except discord.errors.HTTPException:
+                                await msg.channel.send("Config Icon Is Wrong\nChanged to Default!")
+                                update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
+                            except Exception as e:
+                                raise e
                     
                         
                     else:
@@ -197,11 +202,14 @@ async def on_ready():
                         except discord.errors.NotFound:
                             print(1)
                         except discord.errors.HTTPException:
-                            await msg.channel.send("Message cannot be send check [CONFIG]")
+                            await msg.channel.send("Config Icon Is Wrong\nChanged to Default!")
+                            update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                         except Exception as e:
                             raise e
                 
-            
+                else:
+                    pass
+                    await asyncio.sleep(2)
             except Exception as e:
                 raise e  
 @client.command()
@@ -209,16 +217,55 @@ async def on_ready():
 async def start(ctx):
     ch_id = ctx.message.channel.id
     channel0 = client.get_channel(ch_id)
-    msg0 = await channel0.send(".")
-    msg1 = await channel0.send(".")
+    
+
+    def check(message):
+        return message
+
+    async def channel0(ctx):
+        await ctx.send("Pick Channel for Status #<channel>")
+        channel0 = await client.wait_for("message",check=check)
+        if channel0.channel_mentions != []:
+            channel0 = channel0.channel_mentions[0].id
+            return str(channel0)
+        else:
+            await ctx.send("Could not found this channel\nTry again")
+            return None
+
+    async def channel1(ctx):
+        await ctx.send("Pick Channel for ON/OFF #<channel>")
+        channel1 = await client.wait_for("message",check=check)
+        if channel1.channel_mentions != []:
+            channel1 = channel1.channel_mentions[0].id
+            return str(channel1)
+        else:
+            await ctx.send("Could not found this channel\nTry again")
+            return None
+        
+    c0 = await channel0(ctx)
+    if c0 is not None and len(c0) > 5:    
+        c1 = await channel1(ctx)
+        if c1 is not None:
+            chann0 = ctx.guild.get_channel(int(c0))
+            chann1 = ctx.guild.get_channel(int(c1))
+            msg0 = await chann0.send(".")
+            msg1 = await chann1.send(".")
+            data = {"channel_id0":c0,"msg0":msg0.id,"msg1":msg1.id,"channel_id1":c1}
+            update_by_data(ctx.guild.id,data)
+            await ctx.send("Updated",delete_after=2)
+    
+    #status_update(ctx.message.guild.id,channel0.id,msg0.id,msg1.id)
+
+"""@start.error        
+async def config_error(ctx: commands.Context, error: commands.CommandError):
+    await ctx.send("x")"""
+
+
 
     
-    status_update(ctx.message.guild.id,channel0.id,msg0.id,msg1.id)
-
-@start.error        
-async def config_error(ctx: commands.Context, error: commands.CommandError):
-    await ctx.send("x")
-
+            
+      
+    
 @client.command()
 @commands.has_permissions(administrator = True)
 async def say(ctx,*,msg):
@@ -276,7 +323,6 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
         pass
     
 
-"""TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("TOKEN")
 client.run(TOKEN)
-"""
-client.run("OTI5NDc3NTI2ODkwMzY0OTQw.Ydn5Zw.IMncF6HuR4d7qcYujNhp2mejbd8")
+

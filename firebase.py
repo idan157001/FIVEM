@@ -33,7 +33,7 @@ x = auth.sign_in_with_email_and_password(email,password)
 def get_status_info(guild_id):
   data = db.child("Servers").child(guild_id).get()
   data = data.val()
-  return data["channel_id0"],data["msg0"],data["msg1"]
+  return data["channel_id0"],data["channel_id1"],data["msg0"],data["msg1"]
 
 def create_table(guild_id,server_name):
   guild_id = str(guild_id)
@@ -56,3 +56,4 @@ def get_information(guild_id):
   data = db.child("Servers").child(guild_id).get()
   data = data.val()
   return data["title"],data["icon"],data["ip"]
+create_table("123","123")
