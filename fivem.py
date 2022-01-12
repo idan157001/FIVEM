@@ -123,7 +123,7 @@ async def on_ready():
 
            
                
-                if info_channels[0] is not None and len(info_channels[0]) and len(info_channels[1]) > 5:
+                if info_channels[0] is not None and len(info_channels[0])  > 5 and len(info_channels[1]) > 5:
                 
                     channel0,channel1,msg0,msg1=get_status_info(guild_id) #stopped here work need to use -channel before 
 
