@@ -121,11 +121,9 @@ async def on_ready():
                 server = Server_info(IP)
                 req_json,max_players = server.send_request()[0],server.send_request()[1]
 
-            except:
-                print(123)
-            try:
-                
-                if len(info_channels[0]) and len(info_channels[1]) > 5:
+           
+               
+                if info_channels[0] is not None and len(info_channels[0]) and len(info_channels[1]) > 5:
                 
                     channel0,channel1,msg0,msg1=get_status_info(guild_id) #stopped here work need to use -channel before 
 
@@ -325,4 +323,5 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
 
 TOKEN = os.getenv("TOKEN")
 client.run(TOKEN)
+
 
