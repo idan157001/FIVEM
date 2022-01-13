@@ -98,7 +98,7 @@ DEV = "Idan#8461"
 async def update_new():
     for guild in client.guilds:
       create_table(guild.id,guild.name)
-    
+
     
 @client.event
 async def on_guild_join(guild):
@@ -224,7 +224,7 @@ async def on_ready():
                     pass
                     await asyncio.sleep(2)
             except Exception as e:
-                raise e
+                pass
 @client.command()
 @commands.has_permissions(administrator = True)
 async def start(ctx):
