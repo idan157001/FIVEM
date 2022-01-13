@@ -104,13 +104,14 @@ async def update_new():
 async def on_guild_join(guild):
     config = await guild.create_text_channel(name="config")
     await config.send(f"Hello My Prefix is ``-``\nType -help")
-
+    guild.get_command("help").callback()
+    
 @client.command()
 async def help(ctx):
-    embed = discord.Embed(title="Fivem Status",description="", colour=discord.Colour.red(),timestamp=datetime.utcnow())
-    embed.add_field(name="-start",value="Config Fivem Status channels")
-    embed.add_field(name="-config",value="-config info\n-config title\nconfig ip\n config icon",inline=True)
-    
+    embed = discord.Embed(title=f'Fivem Status',timestamp=datetime.utcnow(), color=84848)
+    embed.add_field(name="**-start**", value="Select Channels", inline=False)
+    embed.add_field(name="**Information**", value="``-config`` ``-config info`` ``-config title`` ``-config ip`` ``-config icon``", inline=False)
+    embed.set_author(name=f"Prefix: -")
     embed.set_footer(text=f'{DEV} | Last Updated: Today ·')
     await ctx.send(embed=embed)
 
