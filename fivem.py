@@ -123,7 +123,7 @@ async def on_ready():
 
            
                
-                if info_channels[0] is not None and len(info_channels[0]) > 5 and len(info_channels[1]) > 5:
+                if info_channels[0] is not None and len(info_channels[0])  > 5 and len(info_channels[1]) > 5:
                 
                     channel0,channel1,msg0,msg1=get_status_info(guild_id) #stopped here work need to use -channel before 
 
@@ -202,14 +202,16 @@ async def on_ready():
                         except discord.errors.HTTPException:
                             await msg.channel.send("Config Icon Is Wrong\nChanged to Default!")
                             update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
+                            await asyncio.sleep(3)
                         except Exception as e:
-                            raise e
+                            print(0)
+
                 
                 else:
                     pass
                     await asyncio.sleep(2)
             except Exception as e:
-                raise e  
+                raise e
 @client.command()
 @commands.has_permissions(administrator = True)
 async def start(ctx):
@@ -279,7 +281,7 @@ async def config(ctx,info):
 
     guild = ctx.message.guild.id
     
-    if info == "title":
+    if info.lower() == "title":
         await ctx.send("Enter Status Title")
         title = await client.wait_for("message",check=check)
         if title.content == "None" or title.content == 'none':
@@ -289,7 +291,7 @@ async def config(ctx,info):
         update_by_data(guild,data)
         await ctx.send("Updated!")
 
-    elif info == "icon":
+    elif info.lower() == "icon":
         await ctx.send("Enter Status Icon")
         icon = await client.wait_for("message",check=check)
         if icon.content == "None" or icon.content == 'none':
@@ -303,19 +305,32 @@ async def config(ctx,info):
         update_by_data(guild,data)
         await ctx.send("Updated!")
 
-    elif info == "ip":
+    elif info.lower() == "ip":
         await ctx.send("Enter Status IP")
         ip = await client.wait_for("message",check=check)
         data = {"ip":ip.content}
         update_by_data(guild,data)
         await ctx.send("Updated!")
+    if info.lower() =="info":
+        try:
+            data = get_info_by_data(ctx.guild.id,{"title":"","ip":"","icon":""})
+
+            embed = discord.Embed(title="Config",description="", colour=discord.Colour.red())
+            embed.add_field(name="-config title",value=f"{data['title']  if len(data['title']) >= 1 else 'None'}",inline=False)
+            embed.add_field(name="-config ip",value=f"``{data['ip']  if len(data['ip']) >= 1 else 'None'}``",inline=False)
+            embed.add_field(name="-config icon",value=f"{data['icon']  if len(data['icon']) >= 1 else 'None'}",inline=False)
+            await ctx.send(embed=embed)
+        except:
+            await ctx.send("Something went wrong")
 @config.error        
 async def config_error(ctx: commands.Context, error: commands.CommandError):
     if isinstance(error,commands.errors.MissingRequiredArgument):
+        data = get_info_by_data(ctx.guild.id,{"title":"","ip":"","icon":""})
+        
         embed = discord.Embed(title="Config",description="", colour=discord.Colour.red())
-        embed.add_field(name="-config title",value="Server Status value",inline=False)
-        embed.add_field(name="-config ip",value="Server ip address (full ip)",inline=False)
-        embed.add_field(name="-config icon",value="Server Status icon (link)",inline=False)
+        embed.add_field(name="-config title",value=f"Title of the server",inline=False)
+        embed.add_field(name="-config ip",value=f"ip of the server",inline=False)
+        embed.add_field(name="-config icon",value=f"icon of the server",inline=False)
         await ctx.send(embed=embed)
     else:
         pass
@@ -323,5 +338,4 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
 
 TOKEN = os.getenv("TOKEN")
 client.run(TOKEN)
-
 

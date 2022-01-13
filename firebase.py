@@ -46,7 +46,14 @@ def create_table(guild_id,server_name):
 def update_by_data(guild_id,data):
   db.child("Servers").child(guild_id).update(data)
 
-
+def get_info_by_data(guild_id,info):
+  data = db.child("Servers").child(guild_id).get()
+  data = data.val()
+  for key in data:
+    for i in info:
+      if key == i:
+        info[i] = data[key]
+  return info
 def status_update(guild_id,channel0,msg0,msg1):
   guild_id,channel0,msg0,msg1 = str(guild_id),str(channel0),str(msg0),str(msg1)
   data = {"channel_id0":channel0,"msg0":msg0,"msg1":msg1}
@@ -56,4 +63,4 @@ def get_information(guild_id):
   data = db.child("Servers").child(guild_id).get()
   data = data.val()
   return data["title"],data["icon"],data["ip"]
-create_table("123","123")
+
