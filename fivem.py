@@ -99,6 +99,7 @@ async def update_new():
       create_table(guild.id,guild.name)
     
     
+    
 
     
             
@@ -106,7 +107,7 @@ async def update_new():
 async def on_ready():
     update_new.start()
     print('Connected')
-    
+    await asyncio.sleep(3)
 
     
     while True:
