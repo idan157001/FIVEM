@@ -110,8 +110,7 @@ async def on_guild_join(guild):
 async def help(ctx):
     embed = discord.Embed(title=f'Fivem Status',timestamp=datetime.utcnow(), color=84848)
     embed.add_field(name="**-start**", value="Select Channels", inline=False)
-    embed.add_field(name="**Information**", value="``-config`` ``-config info`` ``-config title`` ``-config ip`` ``-config icon``", inline=False)
-    embed.set_author(name=f"Prefix: -")
+    embed.add_field(name="**Information**", value="``-config``\n``-config info``\n``-config title``\n``-config ip``\n``-config icon``", inline=False)
     embed.set_footer(text=f'{DEV} | Last Updated: Today ·')
     await ctx.send(embed=embed)
 
@@ -170,7 +169,7 @@ async def on_ready():
                                 await msg.channel.send("Config Icon Is Wrong\nChanged to Default!")
                                 update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                             except Exception as e:
-                                raise e
+                                pass
                     
                         
                     else:
@@ -222,7 +221,6 @@ async def on_ready():
                 
                 else:
                     pass
-                    await asyncio.sleep(2)
             except Exception as e:
                 pass
 @client.command()
@@ -267,7 +265,7 @@ async def start(ctx):
             update_by_data(ctx.guild.id,data)
             await ctx.send("Updated",delete_after=2)
     
-    #status_update(ctx.message.guild.id,channel0.id,msg0.id,msg1.id)
+    
 
 @start.error        
 async def config_error(ctx: commands.Context, error: commands.CommandError):
@@ -329,9 +327,9 @@ async def config(ctx,info):
             data = get_info_by_data(ctx.guild.id,{"title":"","ip":"","icon":""})
 
             embed = discord.Embed(title="Config",description="", colour=discord.Colour.red())
-            embed.add_field(name="-config title",value=f"{data['title']  if len(data['title']) >= 1 else 'None'}",inline=False)
+            embed.add_field(name="-config title",value=f"```{data['title']  if len(data['title']) >= 1 else 'None'}``",inline=False)
             embed.add_field(name="-config ip",value=f"``{data['ip']  if len(data['ip']) >= 1 else 'None'}``",inline=False)
-            embed.add_field(name="-config icon",value=f"{data['icon']  if len(data['icon']) >= 1 else 'None'}",inline=False)
+            embed.add_field(name="-config icon",value=f"``{data['icon']  if len(data['icon']) >= 1 else 'None'}``",inline=False)
             await ctx.send(embed=embed)
         except:
             await ctx.send("Something went wrong")
