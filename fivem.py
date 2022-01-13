@@ -327,7 +327,7 @@ async def config(ctx,info):
             data = get_info_by_data(ctx.guild.id,{"title":"","ip":"","icon":""})
 
             embed = discord.Embed(title="Config",description="", colour=discord.Colour.red())
-            embed.add_field(name="-config title",value=f"```{data['title']  if len(data['title']) >= 1 else 'None'}``",inline=False)
+            embed.add_field(name="-config title",value=f"``{data['title']  if len(data['title']) >= 1 else 'None'}``",inline=False)
             embed.add_field(name="-config ip",value=f"``{data['ip']  if len(data['ip']) >= 1 else 'None'}``",inline=False)
             embed.add_field(name="-config icon",value=f"``{data['icon']  if len(data['icon']) >= 1 else 'None'}``",inline=False)
             await ctx.send(embed=embed)
