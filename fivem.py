@@ -103,8 +103,8 @@ async def update_new():
 @client.event
 async def on_guild_join(guild):
     config = await guild.create_text_channel(name="config")
-    await config.send(f"Hello My Prefix is ``-``\n")
-    client.get_command("help").callback()
+    await config.send(f"Hello My Prefix is ``-``\nType -help")
+    
 
 @client.command()
 async def help(ctx):
