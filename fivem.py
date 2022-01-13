@@ -91,7 +91,8 @@ class Server_info():
 
 
 client = commands.Bot(command_prefix='-')
-
+client.remove_command('help')
+DEV = "Idan#8461"
 
 @tasks.loop(seconds=5.0)
 async def update_new():
@@ -99,16 +100,26 @@ async def update_new():
       create_table(guild.id,guild.name)
     
     
-    
+@client.event
+async def on_guild_join(guild):
+    config = await guild.create_text_channel(name="config")
+    await config.send(f"Hello My Prefix is ``-``\nType -help")
 
+@client.command()
+async def help(ctx):
+    embed = discord.Embed(title="Fivem Status",description="", colour=discord.Colour.red(),timestamp=datetime.utcnow())
+    embed.add_field(name="-start",value="Config Fivem Status channels")
+    embed.add_field(name="-config",value="-config info\n-config title\nconfig ip\n config icon",inline=True)
     
-            
+    embed.set_footer(text=f'{DEV} | Last Updated: Today ·')
+    await ctx.send(embed=embed)
+
 @client.event
 async def on_ready():
     update_new.start()
     print('Connected')
     await asyncio.sleep(3)
-    DEV = "Idan#8461"
+    
     
     while True:
         for guild in client.guilds:
@@ -257,9 +268,9 @@ async def start(ctx):
     
     #status_update(ctx.message.guild.id,channel0.id,msg0.id,msg1.id)
 
-"""@start.error        
+@start.error        
 async def config_error(ctx: commands.Context, error: commands.CommandError):
-    await ctx.send("x")"""
+    await ctx.send("Something went wrong")
 
 
 
@@ -290,7 +301,7 @@ async def config(ctx,info):
         else:
             data = {"title":title.content}
         update_by_data(guild,data)
-        await ctx.send("Updated!")
+        await ctx.send("Updated",delete_after=2)
 
     elif info.lower() == "icon":
         await ctx.send("Enter Status Icon")
@@ -304,14 +315,14 @@ async def config(ctx,info):
         else:
             data = {"icon":icon.content}
         update_by_data(guild,data)
-        await ctx.send("Updated!")
+        await ctx.send("Updated",delete_after=2)
 
     elif info.lower() == "ip":
         await ctx.send("Enter Status IP")
         ip = await client.wait_for("message",check=check)
         data = {"ip":ip.content}
         update_by_data(guild,data)
-        await ctx.send("Updated!")
+        await ctx.send("Updated",delete_after=2)
     if info.lower() =="info":
         try:
             data = get_info_by_data(ctx.guild.id,{"title":"","ip":"","icon":""})
