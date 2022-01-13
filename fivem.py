@@ -103,9 +103,9 @@ async def update_new():
 @client.event
 async def on_guild_join(guild):
     config = await guild.create_text_channel(name="config")
-    await config.send(f"Hello My Prefix is ``-``\nType -help")
-    guild.get_command("help").callback()
-    
+    await config.send(f"Hello My Prefix is ``-``\n")
+    client.get_command("help").callback()
+
 @client.command()
 async def help(ctx):
     embed = discord.Embed(title=f'Fivem Status',timestamp=datetime.utcnow(), color=84848)
