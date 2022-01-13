@@ -108,7 +108,7 @@ async def on_ready():
     update_new.start()
     print('Connected')
     await asyncio.sleep(3)
-
+    DEV = "Idan#8461"
     
     while True:
         for guild in client.guilds:
@@ -139,17 +139,17 @@ async def on_ready():
                                 #Offline
                                 #await client.change_presence(status=discord.Status.dnd, activity=discord.Activity(type=discord.ActivityType.watching, name=f"yy"))
                                 #await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Activity(type=discord.ActivityType.watching, name=f"🐌[OFF] xx")) 
-                                embed = discord.Embed(title="``👥`` ``Players: [0/0]``\n``🔴`` ``Status`` - Server Offline ",description="", colour=discord.Colour.red())
+                                embed = discord.Embed(title="``👥`` ``Players: [0/0]``\n``🔴`` ``Status`` - Server Offline ",description="", colour=discord.Colour.red(),timestamp=datetime.utcnow())
                                 embed.set_thumbnail(url=f"{icon}")
                                 embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
-                                embed.set_footer(text=f'{title_name} Last Updated: Today · {str(datetime.now())[10:-10]}', icon_url=f"{icon}")
+                                embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
                                 await msg.edit(embed=embed)
                                 
 
                                 ##################################
                                 embed = discord.Embed(title=f"**{title_name} information**", colour=discord.Colour.red())
                                 embed.set_thumbnail(url=f"{icon}")
-                                embed.set_footer(text=f'{title_name} Last Updated: Today · {str(datetime.now())[10:-10]}', icon_url=f"{icon}")
+                                embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
                                 embed.add_field(name=f"``🔴`` ``Status``\n``👥`` ``Players: Server Offline ``", value=f"``🌐`` ``IP-❌``\n  ")
                                 await information_msg.edit(embed=embed)
                             except discord.errors.NotFound:
@@ -178,7 +178,7 @@ async def on_ready():
                             #await client.change_presence(status=discord.Status.dnd, activity=discord.Activity(type=discord.ActivityType.watching, name=f"xxxxx)"))
                             #await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"🐌[{players_length}/{max_players}] ({guild.member_count})"))
                             embed = discord.Embed(title=TITLE, colour=discord.Colour.green(), timestamp=datetime.utcnow())
-                            embed.set_footer(text=f'{title_name} | Last Updated: Today ·', icon_url=f"{icon}")
+                            embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
                             embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
                             embed.set_thumbnail(url=f"{icon}")
 
@@ -186,7 +186,7 @@ async def on_ready():
                             embed.add_field(name="[👥Name]", value=name,inline=True)
                             embed.add_field(name="[💻 Discord ]", value=dis,inline=True)
                             embed.set_thumbnail(url=f"{icon}")
-                            embed.set_footer(text=f'{title_name} Last Updated:')
+                            embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
                             
                             await msg.edit(embed=embed)
 
@@ -196,12 +196,12 @@ async def on_ready():
                             embed.add_field(name=f"``🟢`` ``Status``\n``👥`` ``Players: [{players_length}/{max_players}]``", value=f"``🌐`` ``IP-Soon..``  ")
                             embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
                             embed.set_thumbnail(url=f"{icon}")
-                            embed.set_footer(text=f'{title_name} Last Updated:')
+                            embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
                             await information_msg.edit(embed=embed)
                         except discord.errors.NotFound:
                             print(1)
                         except discord.errors.HTTPException:
-                            await msg.channel.send("Config Icon Is Wrong\nChanged to Default!")
+                            await msg.channel.send("Config Icon Is Wrong\n\nChanged to Default!")
                             update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                             await asyncio.sleep(3)
                         except Exception as e:
