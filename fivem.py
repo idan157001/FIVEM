@@ -169,7 +169,7 @@ async def on_ready():
                                 await msg.channel.send("Config Icon Is Wrong\nChanged to Default!")
                                 update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                             except Exception as e:
-                                pass
+                                raise e
                     
                         
                     else:
@@ -220,9 +220,9 @@ async def on_ready():
 
                 
                 else:
-                    pass
+                    await asyncio.sleep(2)
             except Exception as e:
-                pass
+                raise e
 @client.command()
 @commands.has_permissions(administrator = True)
 async def start(ctx):
@@ -347,6 +347,8 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
         pass
     
 
-TOKEN = os.getenv("TOKEN")
+"""TOKEN = os.getenv("TOKEN")
 client.run(TOKEN)
 
+"""
+client.run("OTMxMjcxNTU5OTA0MTI5MDQ0.YeCAOg.XnVOxlNcDfqE01FgcjSrllIe0Eo")
