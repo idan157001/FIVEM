@@ -90,7 +90,7 @@ class Server_info():
             pass
 
 
-client = commands.Bot(command_prefix='-')
+client = commands.Bot(command_prefix='f!')
 client.remove_command('help')
 DEV = "Idan#8461"
 
@@ -103,13 +103,25 @@ async def update_new():
 @client.event
 async def on_guild_join(guild):
     try:
-        config = await guild.create_text_channel(name="config")
+        config = await guild.create_text_channel(name="・flash_bot")
         x = guild.me.guild_permissions
         if x.manage_channels == True and x.send_messages == True  and x.read_messages == True  and x.view_channel == True and x.manage_messages == True:
             pass
         else:
-            raise commands.errors.CommandInvokeError    
-        await config.send(f"Hello My Prefix is ``-``\nType -help")
+            raise commands.errors.CommandInvokeError
+        embed = discord.Embed(title=f'Thanks for inviting me to your server!',description="I am FiveM bot\n I am here to help you with FiveM status\n\
+                                                                                            This is FiveM Status project that we developed for FiveM players\n\
+                                                                                            Have Fun ;)\n\
+                                                                                            It should be noted that this is **Beta Project**\n\
+                                                                                            This Project Developed By **Idan#8461**",timestamp=datetime.utcnow(), color=84848)
+        
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/803961555267485736/931623750175187054/unknown.png")
+        embed.set_footer(text=f'Flash_Bot Beta Project')
+        await config.send(embed=embed)
+
+
+
+        
     except commands.errors.CommandInvokeError:
         await config.send("Missing Permissions")
     except Exception as e:
@@ -119,8 +131,8 @@ async def on_guild_join(guild):
 @commands.has_permissions(administrator = True)
 async def help(ctx):
     embed = discord.Embed(title=f'Fivem Status',timestamp=datetime.utcnow(), color=84848)
-    embed.add_field(name="**-start**", value="Select Channels", inline=False)
-    embed.add_field(name="**Information**", value="``-config``\n``-config info``\n``-config title``\n``-config ip``\n``-config icon``", inline=False)
+    embed.add_field(name="**f! start**", value="Select Channels", inline=False)
+    embed.add_field(name="**Information**", value="``f! config``\n``f! config info``\n``f! config title``\n``f! config ip``\n``f! config icon``", inline=False)
     embed.set_footer(text=f'{DEV} | Last Updated: Today ·')
     await ctx.send(embed=embed)
 
@@ -133,12 +145,17 @@ async def on_ready():
     
     
     while True:
+        members = 0
+        servers = 0
         for guild in client.guilds:
             guild = guild
             guild_id = guild.id
+            servers+= 1
+            members+= guild.member_count
+
             
             try:
-                     
+                await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}"))    
                 info_channels= get_status_info(guild_id)
                 title_name,icon,IP = get_information(guild_id)
                 server = Server_info(IP)
@@ -337,9 +354,9 @@ async def config(ctx,info):
             data = get_info_by_data(ctx.guild.id,{"title":"","ip":"","icon":""})
 
             embed = discord.Embed(title="Config",description="", colour=discord.Colour.red())
-            embed.add_field(name="-config title",value=f"``{data['title']  if len(data['title']) >= 1 else 'None'}``",inline=False)
-            embed.add_field(name="-config ip",value=f"``{data['ip']  if len(data['ip']) >= 1 else 'None'}``",inline=False)
-            embed.add_field(name="-config icon",value=f"``{data['icon']  if len(data['icon']) >= 1 else 'None'}``",inline=False)
+            embed.add_field(name="f! config title",value=f"``{data['title']  if len(data['title']) >= 1 else 'None'}``",inline=False)
+            embed.add_field(name="f! config ip",value=f"``{data['ip']  if len(data['ip']) >= 1 else 'None'}``",inline=False)
+            embed.add_field(name="f! config icon",value=f"``{data['icon']  if len(data['icon']) >= 1 else 'None'}``",inline=False)
             await ctx.send(embed=embed)
         except:
             await ctx.send("Something went wrong")
@@ -349,9 +366,9 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
         data = get_info_by_data(ctx.guild.id,{"title":"","ip":"","icon":""})
         
         embed = discord.Embed(title="Config",description="", colour=discord.Colour.red())
-        embed.add_field(name="-config title",value=f"Title of the server",inline=False)
-        embed.add_field(name="-config ip",value=f"ip of the server",inline=False)
-        embed.add_field(name="-config icon",value=f"icon of the server",inline=False)
+        embed.add_field(name="f! config title",value=f"Title of the server",inline=False)
+        embed.add_field(name="f! config ip",value=f"ip of the server",inline=False)
+        embed.add_field(name="f! config icon",value=f"icon of the server",inline=False)
         await ctx.send(embed=embed)
     else:
         pass
