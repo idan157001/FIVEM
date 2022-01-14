@@ -116,6 +116,7 @@ async def on_guild_join(guild):
         print(e)
 
 @client.command()
+@commands.has_permissions(administrator = True)
 async def help(ctx):
     embed = discord.Embed(title=f'Fivem Status',timestamp=datetime.utcnow(), color=84848)
     embed.add_field(name="**-start**", value="Select Channels", inline=False)
@@ -290,12 +291,7 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
     
             
       
-   
-@client.command()
-@commands.has_permissions(administrator = True)
-async def say(ctx,*,msg):
-    await ctx.message.delete()
-    await ctx.send(f'{msg}')
+
 
 @client.command()
 @commands.has_permissions(administrator = True)
