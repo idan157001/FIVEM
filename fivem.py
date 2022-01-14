@@ -102,10 +102,19 @@ async def update_new():
     
 @client.event
 async def on_guild_join(guild):
-    config = await guild.create_text_channel(name="config")
-    print(guild.me.guild_permissions.manage_channels)
-    await config.send(f"Hello My Prefix is ``-``\nType -help")
+    try:
+        config = await guild.create_text_channel(name="config")
     
+        x = guild.me.guild_permissions
+        if x.manage_channels == True and x.send_messages == True  and x.read_messages == True  and x.view_channel == True and x.manage_messages == True:
+            pass
+        else:
+            raise commands.errors.CommandInvokeError    
+        await config.send(f"Hello My Prefix is ``-``\nType -help")
+    except commands.errors.CommandInvokeError:
+        await config.send("Missing Permissions")
+    except Exception as e:
+        print(e)
 
 @client.command()
 async def help(ctx):
@@ -115,7 +124,7 @@ async def help(ctx):
     embed.set_footer(text=f'{DEV} | Last Updated: Today ·')
     await ctx.send(embed=embed)
 
-@commands.has_permissions(administrator = True)
+
 @client.event
 async def on_ready():
     update_new.start()
@@ -166,12 +175,12 @@ async def on_ready():
                                 embed.add_field(name=f"``🔴`` ``Status``\n``👥`` ``Players: Server Offline ``", value=f"``🌐`` ``IP-❌``\n  ")
                                 await information_msg.edit(embed=embed)
                             except discord.errors.NotFound:
-                                print(1)
+                                pass
                             except discord.errors.HTTPException:
                                 await msg.channel.send("Config Icon Is Wrong\nChanged to Default!")
                                 update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                             except Exception as e:
-                                raise e
+                                pass
                     
                         
                     else:
@@ -212,19 +221,22 @@ async def on_ready():
                             embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
                             await information_msg.edit(embed=embed)
                         except discord.errors.NotFound:
-                            print(1)
+                            pass
                         except discord.errors.HTTPException:
                             await msg.channel.send("Config Icon Is Wrong\n\nChanged to Default!")
                             update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                             await asyncio.sleep(3)
                         except Exception as e:
-                            print(0)
+                            pass
 
                 
                 else:
                     await asyncio.sleep(2)
+            except discord.errors.Forbidden:
+                pass
+            
             except Exception as e:
-                raise e
+                pass
 @client.command()
 @commands.has_permissions(administrator = True)
 async def start(ctx):
@@ -271,7 +283,10 @@ async def start(ctx):
 
 @start.error        
 async def config_error(ctx: commands.Context, error: commands.CommandError):
-    await ctx.send("Something went wrong")
+    if isinstance(error,commands.errors.CommandInvokeError):
+        await ctx.send("Missing Permissions")
+    else:
+        await ctx.send("Something went wrong")
 
 
 
