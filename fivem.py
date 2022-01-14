@@ -181,7 +181,7 @@ async def on_ready():
                 info_channels= get_status_info(guild_id)
                 title_name,icon,IP = get_information(guild_id)
                 server = Server_info(IP)
-                req_json,max_players = server.send_request()[0],server.send_request()[1]
+                req_json,max_players = await server.send_request()
 
            
                
