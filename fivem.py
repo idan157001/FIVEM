@@ -214,10 +214,11 @@ async def on_ready():
                     else:
                         try:
                             
-                            space = server.caculate_space(server.build_form(req_json)[3],max_players)
+                            
                             #Online
                         
                             id,name,dis,players_length = server.build_form(req_json)
+                            space = server.caculate_space(players_length,max_players)
                             if id == "None":
                                 TITLE = f"{title_name}\n ``👥`` ``Players`` - ``{players_length}/{max_players}``\n ``👽`` `` Space``   - ``{space}% `` \n ``⚪`` ``Status``   - ``Server is empty``" # SERVER OPEN WITH 0 PLAYERS
                                
@@ -259,7 +260,7 @@ async def on_ready():
 
                 
                 else:
-                    await asyncio.sleep(2)
+                    pass
             
             except Exception as e:
                 pass
