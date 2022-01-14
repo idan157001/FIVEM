@@ -98,7 +98,13 @@ DEV = "Idan#8461"
 async def update_new():
     for guild in client.guilds:
       create_table(guild.id,guild.name)
-
+    
+@client.event
+async def on_guild_remove(guild):
+    servers = 0
+    for g in client.guilds:
+        servers+= 1
+    await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}")) 
     
 @client.event
 async def on_guild_join(guild):
