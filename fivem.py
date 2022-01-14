@@ -149,6 +149,10 @@ async def help(ctx):
 
 @client.event
 async def on_ready():
+    servers = 0
+    for g in client.guilds:
+        servers+= 1
+    await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}")) 
     update_new.start()
     print('Connected')
     await asyncio.sleep(3)
