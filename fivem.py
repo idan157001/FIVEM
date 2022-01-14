@@ -102,6 +102,10 @@ async def update_new():
     
 @client.event
 async def on_guild_join(guild):
+    servers = 0
+    for g in client.guilds:
+        servers+= 1
+    await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}")) 
     try:
         config = await guild.create_text_channel(name="・flash_bot")
         x = guild.me.guild_permissions
@@ -145,17 +149,14 @@ async def on_ready():
     
     
     while True:
-        members = 0
-        servers = 0
+        
         for guild in client.guilds:
             guild = guild
             guild_id = guild.id
-            servers+= 1
-            members+= guild.member_count
+            
 
             
-            try:
-                await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}"))    
+            try:   
                 info_channels= get_status_info(guild_id)
                 title_name,icon,IP = get_information(guild_id)
                 server = Server_info(IP)
