@@ -90,7 +90,7 @@ class Server_info():
             pass
 
 
-client = commands.Bot(command_prefix='f!')
+client = commands.Bot(command_prefix='$')
 client.remove_command('help')
 DEV = "Idan#8461"
 
@@ -141,8 +141,8 @@ async def on_guild_join(guild):
 @commands.has_permissions(administrator = True)
 async def help(ctx):
     embed = discord.Embed(title=f'Fivem Status',timestamp=datetime.utcnow(), color=84848)
-    embed.add_field(name="**f! start**", value="Select Channels", inline=False)
-    embed.add_field(name="**Information**", value="``f! config``\n``f! config info``\n``f! config title``\n``f! config ip``\n``f! config icon``", inline=False)
+    embed.add_field(name="**$ start**", value="Select Channels", inline=False)
+    embed.add_field(name="**Information**", value="``$ config``\n``$ config info``\n``$ config title``\n``$ config ip``\n``$ config icon``", inline=False)
     embed.set_footer(text=f'{DEV} | Last Updated: Today ·')
     await ctx.send(embed=embed)
 
@@ -365,9 +365,9 @@ async def config(ctx,info):
             data = get_info_by_data(ctx.guild.id,{"title":"","ip":"","icon":""})
 
             embed = discord.Embed(title="Config",description="", colour=discord.Colour.red())
-            embed.add_field(name="f! config title",value=f"``{data['title']  if len(data['title']) >= 1 else 'None'}``",inline=False)
-            embed.add_field(name="f! config ip",value=f"``{data['ip']  if len(data['ip']) >= 1 else 'None'}``",inline=False)
-            embed.add_field(name="f! config icon",value=f"``{data['icon']  if len(data['icon']) >= 1 else 'None'}``",inline=False)
+            embed.add_field(name="$ config title",value=f"``{data['title']  if len(data['title']) >= 1 else 'None'}``",inline=False)
+            embed.add_field(name="$ config ip",value=f"``{data['ip']  if len(data['ip']) >= 1 else 'None'}``",inline=False)
+            embed.add_field(name="$ config icon",value=f"``{data['icon']  if len(data['icon']) >= 1 else 'None'}``",inline=False)
             await ctx.send(embed=embed)
         except:
             await ctx.send("Something went wrong")
@@ -377,9 +377,9 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
         data = get_info_by_data(ctx.guild.id,{"title":"","ip":"","icon":""})
         
         embed = discord.Embed(title="Config",description="", colour=discord.Colour.red())
-        embed.add_field(name="f! config title",value=f"Title of the server",inline=False)
-        embed.add_field(name="f! config ip",value=f"ip of the server",inline=False)
-        embed.add_field(name="f! config icon",value=f"icon of the server",inline=False)
+        embed.add_field(name="$ config title",value=f"Title of the server",inline=False)
+        embed.add_field(name="$ config ip",value=f"ip of the server",inline=False)
+        embed.add_field(name="$ config icon",value=f"icon of the server",inline=False)
         await ctx.send(embed=embed)
     else:
         pass
