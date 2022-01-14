@@ -92,7 +92,7 @@ class Server_info():
 
 client = commands.Bot(command_prefix='f!')
 client.remove_command('help')
-DEV = "Idan#8461"
+DEV = "Flash_Bot"
 
 @tasks.loop(seconds=5.0)
 async def update_new():
