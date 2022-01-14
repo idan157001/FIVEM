@@ -103,6 +103,7 @@ async def update_new():
 @client.event
 async def on_guild_join(guild):
     config = await guild.create_text_channel(name="config")
+    print(guild.me.guild_permissions.manage_channels)
     await config.send(f"Hello My Prefix is ``-``\nType -help")
     
 
@@ -114,6 +115,7 @@ async def help(ctx):
     embed.set_footer(text=f'{DEV} | Last Updated: Today ·')
     await ctx.send(embed=embed)
 
+@commands.has_permissions(administrator = True)
 @client.event
 async def on_ready():
     update_new.start()
@@ -276,7 +278,7 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
     
             
       
-    
+   
 @client.command()
 @commands.has_permissions(administrator = True)
 async def say(ctx,*,msg):
@@ -346,9 +348,10 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
     else:
         pass
     
+async def on_command_error(ctx,error):
+    if isinstance(error,discord.Forbidden):
+        await ctx.send("I dont have the permission to do that")
 
-"""TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("TOKEN")
 client.run(TOKEN)
 
-"""
-client.run("OTMxMjcxNTU5OTA0MTI5MDQ0.YeCAOg.XnVOxlNcDfqE01FgcjSrllIe0Eo")
