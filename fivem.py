@@ -104,7 +104,6 @@ async def update_new():
 async def on_guild_join(guild):
     try:
         config = await guild.create_text_channel(name="config")
-    
         x = guild.me.guild_permissions
         if x.manage_channels == True and x.send_messages == True  and x.read_messages == True  and x.view_channel == True and x.manage_messages == True:
             pass
@@ -160,7 +159,7 @@ async def on_ready():
                             try:
                                 #Offline
                                 #await client.change_presence(status=discord.Status.dnd, activity=discord.Activity(type=discord.ActivityType.watching, name=f"yy"))
-                                #await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Activity(type=discord.ActivityType.watching, name=f"🐌[OFF] xx")) 
+                                await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Activity(type=discord.ActivityType.watching, name=f"🐌[OFF]")) 
                                 embed = discord.Embed(title="``👥`` ``Players: [0/0]``\n``🔴`` ``Status`` - Server Offline ",description="", colour=discord.Colour.red(),timestamp=datetime.utcnow())
                                 embed.set_thumbnail(url=f"{icon}")
                                 embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
@@ -198,7 +197,7 @@ async def on_ready():
                                 
                             
                             #await client.change_presence(status=discord.Status.dnd, activity=discord.Activity(type=discord.ActivityType.watching, name=f"xxxxx)"))
-                            #await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"🐌[{players_length}/{max_players}] ({guild.member_count})"))
+                            await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"🐌[{players_length}/{max_players}] ({guild.member_count})"))
                             embed = discord.Embed(title=TITLE, colour=discord.Colour.green(), timestamp=datetime.utcnow())
                             embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
                             embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
@@ -232,8 +231,6 @@ async def on_ready():
                 
                 else:
                     await asyncio.sleep(2)
-            except discord.errors.Forbidden:
-                pass
             
             except Exception as e:
                 pass
