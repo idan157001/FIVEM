@@ -9,14 +9,25 @@ from discord.ext import commands,tasks
 import requests
 from json import JSONDecodeError
 from firebase import *
+import aiohttp
 class Server_info():
     def __init__(self,ip):
         self.ip = ip
 
-    def send_request(self):
+    async def send_request(self):
         try:
-            req_players = (requests.get(f'http://{self.ip}/players.json')).json()
-            req_server_info = (requests.get(f'http://{self.ip}/info.json')).json()
+            async with aiohttp.ClientSession() as session:
+                
+                req_players = f"http://{self.ip}/players.json"
+                req_server_info = f'http://{self.ip}/info.json'
+                x = [req_players,req_server_info]
+                for i,req in enumerate(x):
+                    async with session.get(req) as resp:
+                        if i == 0:
+                            req_players = await resp.json()
+                        else:
+                            req_server_info = await resp.json()
+                        
             if req_server_info:
                 
                 for item in req_server_info:
