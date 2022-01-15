@@ -36,7 +36,7 @@ class Server_info():
         info = {"id":[],"name":[],"dis":[]}
         f_id,f_name,f_dis = "","",""
         p = list()
-        final = ""
+        
 
         if req_json == []:
             return "None","None","None","0"
@@ -44,7 +44,7 @@ class Server_info():
         for item in req_json:
             id = item['id']
             name = (item['name'])
-            ping = (item['ping'])
+            #ping = (item['ping'])
             for i in item['identifiers']:
                 if 'discord' in i:
                     dis_id = str(i).split(':')[1]
@@ -104,6 +104,7 @@ async def on_guild_remove(guild):
     servers = 0
     for g in client.guilds:
         servers+= 1
+    del_db(str(guild.id))
     await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}")) 
     
 @client.event
