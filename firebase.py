@@ -65,4 +65,4 @@ def get_information(guild_id):
   return data["title"],data["icon"],data["ip"]
 
 def del_db(guild_id):
-  db.child("Servers").child(guild_id).removeValue()
+  db.child("Servers").child(guild_id).delete()
