@@ -390,7 +390,7 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
         await ctx.send(embed=embed)
     else:
         pass
-    
+@client.event    
 async def on_command_error(ctx,error):
     if isinstance(error,discord.errors.Forbidden):
         await ctx.send("I dont have the permission to do that")
