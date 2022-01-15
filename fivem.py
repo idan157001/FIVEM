@@ -9,21 +9,30 @@ from discord.ext import commands,tasks
 import requests
 from json import JSONDecodeError
 from firebase import *
+import aiohttp
 class Server_info():
     def __init__(self,ip):
         self.ip = ip
 
-    def send_request(self):
+    async def send_request(self):
+        x = [f'http://{self.ip}/players.json',f'http://{self.ip}/info.json']
+        req_players,req_server_info= "",""
         try:
-            req_players = (requests.get(f'http://{self.ip}/players.json')).json()
-            req_server_info = (requests.get(f'http://{self.ip}/info.json')).json()
-            if req_server_info:
-                
-                for item in req_server_info:
-                    if item == 'vars':
-                        max_players = req_server_info['vars']['sv_maxClients']
+            async with aiohttp.ClientSession() as session:
+                for i in x:  
+                    async with session.get(i) as resp:
+                        resp = await resp.read()
+                        resp = json.loads(resp)
+                        if i.endswith("players.json"):
+                            req_players = resp
+                        else:
+                            req_server_info = resp
+                            for item in req_server_info:
+                                if item == 'vars':
+                                    max_players = req_server_info['vars']['sv_maxClients']
             
-                return req_players,max_players
+            return req_players,max_players
+                   
         except ConnectionError:
             return None,None
         except JSONDecodeError:
@@ -169,7 +178,7 @@ async def on_ready():
                 info_channels= get_status_info(guild_id)
                 title_name,icon,IP = get_information(guild_id)
                 server = Server_info(IP)
-                req_json,max_players = server.send_request()
+                req_json,max_players = asyncio.run(server.send_request())
 
            
                
@@ -316,9 +325,7 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
 
 
 
-    
-            
-      
+ 
 
 
 @client.command()
