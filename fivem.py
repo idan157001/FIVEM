@@ -317,7 +317,7 @@ async def start(ctx):
     
 
 @start.error        
-async def config_error(ctx: commands.Context, error: commands.CommandError):
+async def start(ctx: commands.Context, error: commands.CommandError):
     if isinstance(error,commands.errors.CommandInvokeError):
         await ctx.send("Missing Permissions")
     else:
@@ -392,7 +392,7 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
         pass
     
 async def on_command_error(ctx,error):
-    if isinstance(error,discord.Forbidden):
+    if isinstance(error,discord.errors.Forbidden):
         await ctx.send("I dont have the permission to do that")
     pass
 TOKEN = os.getenv("TOKEN")
