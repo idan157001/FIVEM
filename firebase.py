@@ -30,8 +30,8 @@ x = auth.sign_in_with_email_and_password(email,password)
 
 #############
 
-def get_status_info(guild_id):
-  data = db.child("Servers").child(guild_id).get()
+async def get_status_info(guild_id):
+  data = await db.child("Servers").child(guild_id).get()
   data = data.val()
   return data["channel_id0"],data["channel_id1"],data["msg0"],data["msg1"]
 

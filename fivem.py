@@ -175,7 +175,7 @@ async def on_ready():
 
             
             try:   
-                info_channels= get_status_info(guild_id)
+                info_channels= asyncio.run(get_status_info(guild_id))
                 title_name,icon,IP = get_information(guild_id)
                 server = Server_info(IP)
                 req_json,max_players = await server.send_request()
@@ -184,7 +184,7 @@ async def on_ready():
                
                 if info_channels[0] is not None and len(info_channels[0])  > 5 and len(info_channels[1]) > 5:
                 
-                    channel0,channel1,msg0,msg1=get_status_info(guild_id) #stopped here work need to use -channel before 
+                    channel0,channel1,msg0,msg1=info_channels 
 
                     channel = guild.get_channel(int(channel0)) #ID of channel
                     msg = await channel.fetch_message(int(msg0)) #ID of the message
