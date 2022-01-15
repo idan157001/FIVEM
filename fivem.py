@@ -94,10 +94,7 @@ client = commands.Bot(command_prefix='f!')
 client.remove_command('help')
 DEV = "Flash_Bot"
 
-@tasks.loop(seconds=5.0)
-async def update_new():
-    for guild in client.guilds:
-      create_table(guild.id,guild.name)
+
     
 @client.event
 async def on_guild_remove(guild):
@@ -109,6 +106,8 @@ async def on_guild_remove(guild):
     
 @client.event
 async def on_guild_join(guild):
+    for guild in client.guilds:
+      create_table(guild.id,guild.name)
     servers = 0
     for g in client.guilds:
         servers+= 1
@@ -153,8 +152,7 @@ async def on_ready():
     servers = 0
     for g in client.guilds:
         servers+= 1
-    await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}")) 
-    update_new.start()
+    await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}"))
     print('Connected')
     await asyncio.sleep(3)
     
