@@ -350,7 +350,7 @@ async def config(ctx,info):
     elif info.lower() == "icon":
         await ctx.send("Enter Status Icon")
         icon = await client.wait_for("message",check=check)
-        if icon.content == "None" or icon.content == 'none':
+        if icon.content.lower() == "none":
             data = {"icon":""}
         elif icon.content.startswith("http") is not True:
             await ctx.send("Icon Is Wrong")
@@ -394,7 +394,7 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
 async def on_command_error(ctx,error):
     if isinstance(error,discord.Forbidden):
         await ctx.send("I dont have the permission to do that")
-
+    pass
 TOKEN = os.getenv("TOKEN")
 client.run(TOKEN)
 
