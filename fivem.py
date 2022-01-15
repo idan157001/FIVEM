@@ -20,7 +20,7 @@ class Server_info():
         try:
             async with aiohttp.ClientSession() as session:
                 for i in x:  
-                    async with session.get(i) as resp:
+                    async with session.get(i,timeout=1) as resp:
                         resp = await resp.read()
                         resp = json.loads(resp)
                         if i.endswith("players.json"):
