@@ -175,7 +175,7 @@ async def on_ready():
 
             
             try:   
-                info_channels= asyncio.run(get_status_info(guild_id))
+                info_channels= await (get_status_info(guild_id))
                 title_name,icon,IP = get_information(guild_id)
                 server = Server_info(IP)
                 req_json,max_players = await server.send_request()
