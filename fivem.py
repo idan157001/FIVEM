@@ -336,7 +336,7 @@ async def config(ctx,info):
     guild = ctx.message.guild.id
     
     if info.lower() == "title":
-        await ctx.send("Enter Status Title",delete_after=10)
+        await ctx.send("Enter Status Title")
         title = await client.wait_for("message",check=check)
         if title.content == "None" or title.content == 'none':
             data = {"title":""}
@@ -346,12 +346,12 @@ async def config(ctx,info):
         await ctx.send(f"{updated}",delete_after=2)
 
     elif info.lower() == "icon":
-        await ctx.send("Enter Status Icon",delete_after=10)
+        await ctx.send("Enter Status Icon")
         icon = await client.wait_for("message",check=check)
         if icon.content.lower() == "none":
             data = {"icon":""}
         elif icon.content.startswith("http") is not True:
-            await ctx.send("Icon Is Wrong",delete_after=10)
+            await ctx.send("Icon Is Wrong")
             data = {"icon":""}
             return
         else:
@@ -360,7 +360,7 @@ async def config(ctx,info):
         await ctx.send(f"{updated}",delete_after=2)
 
     elif info.lower() == "ip":
-        await ctx.send("Enter Status IP",delete_after=10)
+        await ctx.send("Enter Status IP")
         ip = await client.wait_for("message",check=check)
         data = {"ip":ip.content}
         update_by_data(guild,data)
