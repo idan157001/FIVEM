@@ -8,6 +8,7 @@ from discord.ext import commands,tasks
 from json import JSONDecodeError
 from firebase import *
 import aiohttp
+import random
 class Server_info():
     def __init__(self,ip):
         self.ip = ip
@@ -326,6 +327,8 @@ async def start(ctx: commands.Context, error: commands.CommandError):
 @client.command()
 @commands.has_permissions(administrator = True)
 async def config(ctx,info):
+    messages = ["I Updated your data ;)","Your data has been updated","Successfully updated","Got it ;)"]
+    updated = random.choice(messages)
     def check(message):
         if message.content not in ["Enter Status Title","Enter Status Icon","Enter Status IP"]:
             return message
@@ -340,7 +343,7 @@ async def config(ctx,info):
         else:
             data = {"title":title.content}
         update_by_data(guild,data)
-        await ctx.send("Updated",delete_after=2)
+        await ctx.send(f"{updated}",delete_after=2)
 
     elif info.lower() == "icon":
         await ctx.send("Enter Status Icon")
@@ -354,14 +357,14 @@ async def config(ctx,info):
         else:
             data = {"icon":icon.content}
         update_by_data(guild,data)
-        await ctx.send("Updated",delete_after=2)
+        await ctx.send(f"{updated}",delete_after=2)
 
     elif info.lower() == "ip":
         await ctx.send("Enter Status IP")
         ip = await client.wait_for("message",check=check)
         data = {"ip":ip.content}
         update_by_data(guild,data)
-        await ctx.send("Updated",delete_after=2)
+        await ctx.send(f"{updated}",delete_after=2)
     if info.lower() =="info":
         try:
             data = get_info_by_data(ctx.guild.id,{"title":"","ip":"","icon":""})
