@@ -221,11 +221,12 @@ async def on_ready():
                             #Online
                         
                             id,name,dis,players_length = server.build_form(req_json)
-                            space = server.caculate_space(players_length,max_players)
+                            
                             if id == "None":
-                                TITLE = f"{title_name}\n ``👥`` ``Players`` - ``{players_length}/{max_players}``\n ``👽`` `` Space``   - ``{space}% `` \n ``⚪`` ``Status``   - ``Server is empty``" # SERVER OPEN WITH 0 PLAYERS
+                                TITLE = f"{title_name}\n ``👥`` ``Players`` - ``{players_length}/{max_players}``\n ``👽`` `` Space``   - ``0% `` \n ``⚪`` ``Status``   - ``Server is empty``" # SERVER OPEN WITH 0 PLAYERS
                                
                             else:
+                                space = server.caculate_space(players_length,max_players)
                                 TITLE = f"``👥``  ``Players`` - ``[{players_length}/{max_players}]``\n``👽``  `` Space`` -  ``{space}%`` \n``🟢``  ``Status`` -  ``ONLINE`` " # SERVER ONLINE WITH PLAYERS 
                                 
                             
