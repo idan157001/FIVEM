@@ -327,7 +327,7 @@ async def start(ctx: commands.Context, error: commands.CommandError):
 @client.command()
 @commands.has_permissions(administrator = True)
 async def config(ctx,info):
-    messages = ["I Updated your data ;)","Your data has been updated","Successfully updated","Got it ;)"]
+    messages = ["I Updated your data 😉","Your data has been updated","Successfully updated","Got it 😉"]
     updated = random.choice(messages)
     def check(message):
         if message.content not in ["Enter Status Title","Enter Status Icon","Enter Status IP"]:
@@ -336,7 +336,7 @@ async def config(ctx,info):
     guild = ctx.message.guild.id
     
     if info.lower() == "title":
-        await ctx.send("Enter Status Title")
+        await ctx.send("Enter Status Title",delete_after=10)
         title = await client.wait_for("message",check=check)
         if title.content == "None" or title.content == 'none':
             data = {"title":""}
@@ -346,12 +346,12 @@ async def config(ctx,info):
         await ctx.send(f"{updated}",delete_after=2)
 
     elif info.lower() == "icon":
-        await ctx.send("Enter Status Icon")
+        await ctx.send("Enter Status Icon",delete_after=10)
         icon = await client.wait_for("message",check=check)
         if icon.content.lower() == "none":
             data = {"icon":""}
         elif icon.content.startswith("http") is not True:
-            await ctx.send("Icon Is Wrong")
+            await ctx.send("Icon Is Wrong",delete_after=10)
             data = {"icon":""}
             return
         else:
@@ -360,7 +360,7 @@ async def config(ctx,info):
         await ctx.send(f"{updated}",delete_after=2)
 
     elif info.lower() == "ip":
-        await ctx.send("Enter Status IP")
+        await ctx.send("Enter Status IP",delete_after=10)
         ip = await client.wait_for("message",check=check)
         data = {"ip":ip.content}
         update_by_data(guild,data)
