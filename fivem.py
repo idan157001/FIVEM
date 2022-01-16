@@ -1,12 +1,10 @@
 import asyncio
-from requests.exceptions import ConnectionError
 import os
 import json
 import time
 from datetime import datetime,date
 import discord
 from discord.ext import commands,tasks
-import requests
 from json import JSONDecodeError
 from firebase import *
 import aiohttp
@@ -33,10 +31,8 @@ class Server_info():
             
             return req_players,max_players
                    
-        except ConnectionError:
-            return None,None
-        except JSONDecodeError:
-            return None,None
+        
+        
         except Exception as e:
             return None,None
             
@@ -175,7 +171,8 @@ async def on_ready():
 
             
             try:   
-                info_channels= get_status_info(guild_id)
+                
+                info_channels = get_status_info(guild_id)
                 title_name,icon,IP = get_information(guild_id)
                 server = Server_info(IP)
                 req_json,max_players = await server.send_request()
@@ -195,8 +192,6 @@ async def on_ready():
                     if req_json is None: 
                             try:
                                 #Offline
-                                #await client.change_presence(status=discord.Status.dnd, activity=discord.Activity(type=discord.ActivityType.watching, name=f"yy"))
-                                #await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Activity(type=discord.ActivityType.watching, name=f"🐌[OFF]")) 
                                 embed = discord.Embed(title="``👥`` ``Players: [0/0]``\n``🔴`` ``Status`` - Server Offline ",description="", colour=discord.Colour.red(),timestamp=datetime.utcnow())
                                 embed.set_thumbnail(url=f"{icon}")
                                 embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
@@ -234,7 +229,6 @@ async def on_ready():
                                 TITLE = f"``👥``  ``Players`` - ``[{players_length}/{max_players}]``\n``👽``  `` Space`` -  ``{space}%`` \n``🟢``  ``Status`` -  ``ONLINE`` " # SERVER ONLINE WITH PLAYERS 
                                 
                             
-                            #await client.change_presence(status=discord.Status.dnd, activity=discord.Activity(type=discord.ActivityType.watching, name=f"xxxxx)"))
                             #await guild.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"🐌[{players_length}/{max_players}] ({guild.member_count})"))
                             embed = discord.Embed(title=TITLE, colour=discord.Colour.green(), timestamp=datetime.utcnow())
                             embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
@@ -372,9 +366,9 @@ async def config(ctx,info):
             data = get_info_by_data(ctx.guild.id,{"title":"","ip":"","icon":""})
 
             embed = discord.Embed(title="Config",description="", colour=discord.Colour.red())
-            embed.add_field(name="f!config title",value=f"``{data['title']  if len(data['title']) >= 1 else 'None'}``",inline=False)
-            embed.add_field(name="f!config ip",value=f"``{data['ip']  if len(data['ip']) >= 1 else 'None'}``",inline=False)
-            embed.add_field(name="f!config icon",value=f"``{data['icon']  if len(data['icon']) >= 1 else 'None'}``",inline=False)
+            embed.add_field(name="**Title**",value=f"``{data['title']  if len(data['title']) >= 1 else 'None'}``",inline=False)
+            embed.add_field(name="**Ip**",value=f"``{data['ip']  if len(data['ip']) >= 1 else 'None'}``",inline=False)
+            embed.add_field(name="**Icon**",value=f"``{data['icon']  if len(data['icon']) >= 1 else 'None'}``",inline=False)
             await ctx.send(embed=embed)
         except:
             await ctx.send("Something went wrong")
