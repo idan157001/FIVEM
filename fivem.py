@@ -261,7 +261,7 @@ async def on_ready():
                         except Exception as e:
                             pass
 
-                #a
+                #
                 else:
                     pass
             
