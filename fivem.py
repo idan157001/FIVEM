@@ -206,12 +206,12 @@ async def on_ready():
                                 embed.add_field(name=f"``🔴`` ``Status``\n``👥`` ``Players: Server Offline ``", value=f"``🌐`` ``IP-❌``\n  ")
                                 await information_msg.edit(embed=embed)
                             except discord.errors.NotFound:
-                                pass
+                                print(e)
                             except discord.errors.HTTPException:
                                 await msg.channel.send("Config Icon Is Wrong\nChanged to Default!")
                                 update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                             except Exception as e:
-                                pass
+                                print(e)
                     
                         
                     else:
@@ -253,20 +253,20 @@ async def on_ready():
                             embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
                             await information_msg.edit(embed=embed)
                         except discord.errors.NotFound:
-                            pass
+                            print(e)
                         except discord.errors.HTTPException:
                             await msg.channel.send("Config Icon Is Wrong\n\nChanged to Default!")
                             update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                             await asyncio.sleep(2)
                         except Exception as e:
-                            pass
+                            print(e)
 
                 #
                 else:
                     pass
             
             except Exception as e:
-                pass
+                print(e)
 @client.command()
 @commands.has_permissions(administrator = True)
 async def start(ctx):
@@ -385,13 +385,13 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
         embed.add_field(name="f!config ip",value=f"ip of the server",inline=False)
         embed.add_field(name="f!config icon",value=f"icon of the server",inline=False)
         await ctx.send(embed=embed)
-    else:
-        pass
+    
+        
 @client.event    
 async def on_command_error(ctx,error):
     if isinstance(error,discord.errors.Forbidden):
         await ctx.send("I dont have the permission to do that")
-    pass
+    
 TOKEN = os.getenv("TOKEN")
 client.run(TOKEN)
 
