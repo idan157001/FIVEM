@@ -18,8 +18,8 @@ firebaseConfig = {
     "appId": "1:646628019661:web:e60edb1dd0edf077b70884",
     "databaseURL": "https://developmentfivemx-fef16-default-rtdb.europe-west1.firebasedatabase.app/u99zXqOp6tYDd370gzvKrgmUz742"
   }
-email = "idanalbam1@gmail.com"
-password = "admin123"
+email = "idanalbam02@walla.com"
+password = "idan123"
 firebase = pyrebase.initialize_app(firebaseConfig)
 db = firebase.database()
 auth = firebase.auth()
