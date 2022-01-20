@@ -18,8 +18,8 @@ firebaseConfig = {
     "appId": "1:646628019661:web:e60edb1dd0edf077b70884",
     "databaseURL": "https://developmentfivemx-fef16-default-rtdb.europe-west1.firebasedatabase.app/u99zXqOp6tYDd370gzvKrgmUz742"
   }
-email = "idanalbam02@walla.com"
-password = "idan123"
+email = "idanalbam1@gmail.com"
+password = "admin123"
 firebase = pyrebase.initialize_app(firebaseConfig)
 db = firebase.database()
 auth = firebase.auth()
@@ -28,7 +28,7 @@ x = auth.sign_in_with_email_and_password(email,password)
 
 
 
-#############
+############
 
 def get_status_info(guild_id):
   data = db.child("Servers").child(guild_id).get()
