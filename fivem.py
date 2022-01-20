@@ -141,7 +141,7 @@ async def on_guild_join(guild):
     except commands.errors.CommandInvokeError:
         await config.send("Missing Permissions")
     except Exception as e:
-        print(e)
+        raise e
 
 @client.command()
 @commands.has_permissions(administrator = True)
@@ -205,13 +205,13 @@ async def on_ready():
                                 embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
                                 embed.add_field(name=f"``🔴`` ``Status``\n``👥`` ``Players: Server Offline ``", value=f"``🌐`` ``IP-❌``\n  ")
                                 await information_msg.edit(embed=embed)
-                            except discord.errors.NotFound:
-                                print(e)
+                            except discord.errors.NotFound as e:
+                                raise e
                             except discord.errors.HTTPException:
                                 await msg.channel.send("Config Icon Is Wrong\nChanged to Default!")
                                 update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                             except Exception as e:
-                                print(e)
+                                raise e
                     
                         
                     else:
@@ -252,21 +252,21 @@ async def on_ready():
                             embed.set_thumbnail(url=f"{icon}")
                             embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
                             await information_msg.edit(embed=embed)
-                        except discord.errors.NotFound:
-                            print(e)
+                        except discord.errors.NotFound as e:
+                            raise e
                         except discord.errors.HTTPException:
                             await msg.channel.send("Config Icon Is Wrong\n\nChanged to Default!")
                             update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                             await asyncio.sleep(2)
                         except Exception as e:
-                            print(e)
+                            raise e
 
                 #
                 else:
                     pass
             
             except Exception as e:
-                print(e)
+                raise e
 @client.command()
 @commands.has_permissions(administrator = True)
 async def start(ctx):
