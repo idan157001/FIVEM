@@ -247,7 +247,7 @@ async def on_ready():
 
                             #########################
                             embed = discord.Embed(title=f"Status Information", colour=discord.Colour.green(), timestamp=datetime.utcnow())
-                            embed.add_field(name=f"``🟢`` ``Status``\n``👥`` ``Players: [{players_length}/{max_players}]``\n``📉`` ``{max_players-players_length}``", value=f"``🌐`` ``IP- {IP}``  ")
+                            embed.add_field(name=f"``🟢`` ``Status``\n``👥`` ``Players: [{players_length}/{max_players}]``\n``📉`` ``{int(max_players)-int(players_length)}``", value=f"``🌐`` ``IP- {IP}``  ")
                             embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
                             embed.set_thumbnail(url=f"{icon}")
                             embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
