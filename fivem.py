@@ -275,7 +275,7 @@ async def on_ready():
                             update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                             await asyncio.sleep(2)
                         except Exception as e:
-                            print(e)
+                            pass
 
                 #
                 else:
