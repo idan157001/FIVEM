@@ -225,7 +225,7 @@ async def on_ready():
                             except discord.errors.NotFound:
                                 pass
                             except discord.errors.HTTPException:
-                                await msg.channel.send("Config Icon Is Wrong\nChanged to Default!")
+                                #await msg.channel.send("Config Icon Is Wrong\nChanged to Default!")
                                 update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                             except Exception as e:
                                 pass
