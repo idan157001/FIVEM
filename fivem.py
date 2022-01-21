@@ -141,11 +141,12 @@ async def on_guild_join(guild):
         
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/803961555267485736/931623750175187054/unknown.png")
         embed.set_footer(text=f'Flash_Bot Beta Project')
+        await voice_connect()
         await config.send(embed=embed)
         await help(config)
         await config.set_permissions(guild.default_role, view_channel=False)
         
-        await voice_connect()
+        
 
 
 
