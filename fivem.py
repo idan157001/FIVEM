@@ -276,14 +276,14 @@ async def on_ready():
                             update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                             await asyncio.sleep(2)
                         except Exception as e:
-                            print(e)
+                            pass
 
                 #
                 else:
                     pass
             
             except Exception as e:
-                print(e)
+                pass
 @client.command()
 @commands.has_permissions(administrator = True)
 async def start(ctx):
@@ -417,6 +417,7 @@ async def leave(ctx,id):
     if ctx.author.id == 353898849334460417:
         try:
             await client.get_guild(int(id)).leave()
+            await ctx.send("Just Left ;)",delete_after=3)
         except:pass
 
 
