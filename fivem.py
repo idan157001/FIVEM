@@ -216,7 +216,7 @@ async def on_ready():
                                 await msg.edit(embed=embed)
                                 
 
-                                ##################################
+                                #################################
                                 embed = discord.Embed(title=f"**{title_name} information**", colour=discord.Colour.red(),timestamp=datetime.utcnow())
                                 embed.set_thumbnail(url=f"{icon}")
                                 embed.set_footer(text=f'{DEV} | Last Updated:', icon_url=f"{icon}")
