@@ -37,7 +37,7 @@ def get_status_info(guild_id):
 
 def create_table(guild_id,server_name):
   guild_id = str(guild_id)
-  data = {"title":"","icon":"","ip":"","server_name":server_name,"channel_id0":"","channel_id1":"","msg0":"","msg1":""}
+  data = {"title":"","icon":"","ip":"","server_name":server_name,"channel_id0":"","channel_id1":"","msg0":"","msg1":"","v_channel":""}
   
   guild_obj = db.child("Servers").child(guild_id).get()
   if guild_obj.val() is None:
@@ -66,3 +66,6 @@ def get_information(guild_id):
 
 def del_db(guild_id):
   db.child("Servers").child(guild_id).remove()
+
+
+create_table("698299485570203658","idan")

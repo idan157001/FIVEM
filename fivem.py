@@ -112,19 +112,27 @@ async def on_guild_remove(guild):
     
 @client.event
 async def on_guild_join(guild):
-    for guild in client.guilds:
-      create_table(guild.id,guild.name)
+    global flash
+    try:
+        for guild in client.guilds:
+            create_table(guild.id,guild.name)
+        
+        
+        
+    except:pass
     servers = 0
     for g in client.guilds:
         servers+= 1
     await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}")) 
     try:
-        config = await guild.create_text_channel(name="・flash_bot")
+        config = await guild.create_text_channel(name="・flash_bot") # text channel
+        flash = await guild.create_voice_channel(name="・Flash_Bot") # voice channel
+        update_by_data(guild.id,{"v_channel":f"{flash.id}"})
         x = guild.me.guild_permissions
         if x.manage_channels == True and x.send_messages == True  and x.read_messages == True  and x.view_channel == True and x.manage_messages == True:
             pass
         else:
-            raise commands.errors.CommandInvokeError
+            print("dont have permission")
         embed = discord.Embed(title=f'Thanks for inviting me to your server!',description="I am FiveM bot\n I am here to help you with FiveM status\n\
                                                                                             This is FiveM Status project that we developed for FiveM players\n\
                                                                                             Have Fun ;)\n\
@@ -134,6 +142,10 @@ async def on_guild_join(guild):
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/803961555267485736/931623750175187054/unknown.png")
         embed.set_footer(text=f'Flash_Bot Beta Project')
         await config.send(embed=embed)
+        await help(config)
+        await config.set_permissions(guild.default_role, view_channel=False)
+        
+        await voice_connect()
 
 
 
@@ -141,26 +153,30 @@ async def on_guild_join(guild):
     except commands.errors.CommandInvokeError:
         await config.send("Missing Permissions")
     except Exception as e:
-        raise e
+        pass
 
 @client.command()
 @commands.has_permissions(administrator = True)
 async def help(ctx):
     embed = discord.Embed(title=f'Fivem Status',timestamp=datetime.utcnow(), color=84848)
-    embed.add_field(name="**f! start**", value="Select Channels", inline=False)
+    embed.add_field(name="**f!start**", value="Select Channels", inline=False)
     embed.add_field(name="**Information**", value="``f!config``\n``f!config info``\n``f!config title``\n``f!config ip``\n``f!config icon``", inline=False)
-    embed.set_footer(text=f'{DEV} | Last Updated: Today ·')
+    embed.set_footer(text=f'{DEV} | Last Updated:')
     await ctx.send(embed=embed)
 
 
 @client.event
 async def on_ready():
+    await voice_connect()
     servers = 0
     for g in client.guilds:
         servers+= 1
+        
+        
     await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}"))
     print('Connected')
     await asyncio.sleep(3)
+    
     
     
     while True:
@@ -195,23 +211,23 @@ async def on_ready():
                                 embed = discord.Embed(title="``👥`` ``Players: [0/0]``\n``🔴`` ``Status`` - Server Offline ",description="", colour=discord.Colour.red(),timestamp=datetime.utcnow())
                                 embed.set_thumbnail(url=f"{icon}")
                                 embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
-                                embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
+                                embed.set_footer(text=f'{DEV} | Last Updated:', icon_url=f"{icon}")
                                 await msg.edit(embed=embed)
                                 
 
                                 ##################################
                                 embed = discord.Embed(title=f"**{title_name} information**", colour=discord.Colour.red(),timestamp=datetime.utcnow())
                                 embed.set_thumbnail(url=f"{icon}")
-                                embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
-                                embed.add_field(name=f"``🔴`` ``Status``\n``👥`` ``Players: Server Offline ``", value=f"``🌐`` ``IP-❌``\n  ")
+                                embed.set_footer(text=f'{DEV} | Last Updated:', icon_url=f"{icon}")
+                                embed.add_field(name=f"``🔴`` ``Status``\n``👥`` ``Players: Server Offline ``", value=f"``🌐`` ``IP-{IP}``\n  ")
                                 await information_msg.edit(embed=embed)
-                            except discord.errors.NotFound as e:
-                                raise e
+                            except discord.errors.NotFound:
+                                pass
                             except discord.errors.HTTPException:
                                 await msg.channel.send("Config Icon Is Wrong\nChanged to Default!")
                                 update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                             except Exception as e:
-                                raise e
+                                pass
                     
                         
                     else:
@@ -232,7 +248,7 @@ async def on_ready():
                             
                             #await guild.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"🐌[{players_length}/{max_players}] ({guild.member_count})"))
                             embed = discord.Embed(title=TITLE, colour=discord.Colour.green(), timestamp=datetime.utcnow())
-                            embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
+                            embed.set_footer(text=f'{DEV} | Last Updated:', icon_url=f"{icon}")
                             embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
                             embed.set_thumbnail(url=f"{icon}")
 
@@ -240,7 +256,7 @@ async def on_ready():
                             embed.add_field(name="[👥Name]", value=name,inline=True)
                             embed.add_field(name="[💻 Discord ]", value=dis,inline=True)
                             embed.set_thumbnail(url=f"{icon}")
-                            embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
+                            embed.set_footer(text=f'{DEV} | Last Updated:', icon_url=f"{icon}")
                             
                             await msg.edit(embed=embed)
 
@@ -250,28 +266,29 @@ async def on_ready():
                             embed.add_field(name=f"``🟢`` ``Status``\n``👥`` ``Players: [{players_length}/{max_players}]``\n``📉`` ``Empty Slots: [{int(max_players)-int(players_length)}]``", value=f"``🌐`` ``IP- {IP}``  ")
                             embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
                             embed.set_thumbnail(url=f"{icon}")
-                            embed.set_footer(text=f'{DEV} | Last Updated: Today ·', icon_url=f"{icon}")
+                            embed.set_footer(text=f'{DEV} | Last Updated:', icon_url=f"{icon}")
                             await information_msg.edit(embed=embed)
-                        except discord.errors.NotFound as e:
-                            raise e
+                        except discord.errors.NotFound:
+                            pass
                         except discord.errors.HTTPException:
                             await msg.channel.send("Config Icon Is Wrong\n\nChanged to Default!")
                             update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
                             await asyncio.sleep(2)
                         except Exception as e:
-                            raise e
+                            print(e)
 
                 #
                 else:
                     pass
             
             except Exception as e:
-                raise e
+                print(e)
 @client.command()
 @commands.has_permissions(administrator = True)
 async def start(ctx):
     ch_id = ctx.message.channel.id
     channel0 = client.get_channel(ch_id)
+    
     
 
     def check(message):
@@ -385,13 +402,44 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
         embed.add_field(name="f!config ip",value=f"ip of the server",inline=False)
         embed.add_field(name="f!config icon",value=f"icon of the server",inline=False)
         await ctx.send(embed=embed)
-    
-        
+    else:
+        pass
 @client.event    
 async def on_command_error(ctx,error):
     if isinstance(error,discord.errors.Forbidden):
         await ctx.send("I dont have the permission to do that")
-    
-TOKEN = os.getenv("TOKEN")
+    pass
+
+@client.command()
+@commands.has_permissions(administrator = True)  
+async def leave(ctx,id):
+    if ctx.author.id == 353898849334460417:
+        try:
+            await client.get_guild(int(id)).leave()
+        except:pass
+
+
+async def voice_connect():
+    for guild in client.guilds:
+        try: 
+            voice_id = get_info_by_data(str(guild.id),{"v_channel":""})
+            if voice_id["v_channel"] != "":
+                c = guild.get_channel(int(voice_id["v_channel"])) 
+                connected = (discord.utils.get(client.voice_clients, guild=guild))
+                if connected is None:
+                    await c.connect()
+                    
+                else:
+                    if connected.channel.id != int(voice_id["v_channel"]):
+                        await connected.disconnect()
+                        await asyncio.sleep(2)
+                        await c.connect()
+               
+        except Exception as e:
+            pass
+
+
+TOKEN = "OTMxMjcxNTU5OTA0MTI5MDQ0.YeCAOg.XnVOxlNcDfqE01FgcjSrllIe0Eo"
+#TOKEN = os.getenv("TOKEN")
 client.run(TOKEN)
 
