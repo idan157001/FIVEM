@@ -441,7 +441,6 @@ async def voice_connect():
             pass
 
 
-TOKEN = "OTMxMjcxNTU5OTA0MTI5MDQ0.YeCAOg.XnVOxlNcDfqE01FgcjSrllIe0Eo"
-#TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("TOKEN")
 client.run(TOKEN)
 

@@ -8,18 +8,28 @@ import discord
 from discord.ext import commands,tasks
 import requests
 from json import JSONDecodeError
+
+
+apiKey = os.getenv("apiKey")
+appId = os.getenv("appId")
+authDomain = os.getenv("authDomain")
+databaseURL =os.getenv("databaseURL")
+email = os.getenv("email")
+messagingSenderId = os.getenv("messagingSenderId")
+password = os.getenv("password")
+projectId = os.getenv("projectId")
+storageBucket = os.getenv("storageBucket")
+
 firebaseConfig = {
-    "apiKey": "AIzaSyBi5lCG1nrj6Q6wsYp8jid4eGrKjpay-1w",
-    "authDomain": "developmentfivemx-fef16.firebaseapp.com",
-    "databaseURL": "https://developmentfivemx-fef16-default-rtdb.europe-west1.firebasedatabase.app",
-    "projectId": "developmentfivemx-fef16",
-    "storageBucket": "developmentfivemx-fef16.appspot.com",
-    "messagingSenderId": "646628019661",
-    "appId": "1:646628019661:web:e60edb1dd0edf077b70884",
-    "databaseURL": "https://developmentfivemx-fef16-default-rtdb.europe-west1.firebasedatabase.app/u99zXqOp6tYDd370gzvKrgmUz742"
+    "apiKey": apiKey,
+    "authDomain": authDomain,
+    "databaseURL": databaseURL,
+    "projectId": projectId,
+    "storageBucket": storageBucket,
+    "messagingSenderId": messagingSenderId,
+    "appId": appId,
+    "databaseURL": databaseURL
   }
-email = "idanalbam1@gmail.com"
-password = "admin123"
 firebase = pyrebase.initialize_app(firebaseConfig)
 db = firebase.database()
 auth = firebase.auth()
