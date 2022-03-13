@@ -61,7 +61,7 @@ class FireBase_DB:
     for key in db_keys:
       for item in information:
         if key == item:
-          information[item] = data[key]
+          information[item] = db_keys[key]
     return information
 ##
   def status_update(self,channel0,msg0,msg1): # NOT USED NEED TO CHECK
