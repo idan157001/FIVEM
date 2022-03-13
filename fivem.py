@@ -190,7 +190,7 @@ async def on_ready():
                     pass
             
             except Exception as e:
-                pass
+                print(e)
 @client.command()
 @commands.has_permissions(administrator = True)
 async def start(ctx):
@@ -350,7 +350,7 @@ async def voice_connect():
                         await c.connect()
                
         except Exception as e:
-            print(e)
+            pass
 
 
 TOKEN = os.getenv("TOKEN")
