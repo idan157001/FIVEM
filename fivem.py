@@ -350,7 +350,7 @@ async def voice_connect():
                         await c.connect()
                
         except Exception as e:
-            pass
+            print(e)
 
 
 TOKEN = os.getenv("TOKEN")
