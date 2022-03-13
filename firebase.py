@@ -1,13 +1,8 @@
 import pyrebase
-from requests.exceptions import ConnectionError
 import os
-import json
-import time
 from datetime import datetime,date
-import discord
 from discord.ext import commands,tasks
-import requests
-from json import JSONDecodeError
+
 
 
 apiKey = os.getenv("apiKey")
@@ -39,43 +34,47 @@ x = auth.sign_in_with_email_and_password(email,password)
 
 
 ############
+class FireBase_DB:
+  def __init__(self,guild_id: int):
+    self.guild_id = str(guild_id)
 
-def get_status_info(guild_id):
-  data = db.child("Servers").child(guild_id).get()
-  data = data.val()
-  return data["channel_id0"],data["channel_id1"],data["msg0"],data["msg1"]
+  def channels_id_info(self):
+    """Getting Channel/Messages ID's from db """
+    data = db.child("Servers").child(self.guild_id).get()
+    data = data.val()
+    return data["channel_id0"],data["channel_id1"],data["msg0"],data["msg1"]
+  ##
+  def add_new_server(self,server_name):
+    """Adding new server to db initilize attributes """
 
-def create_table(guild_id,server_name):
-  guild_id = str(guild_id)
-  data = {"title":"","icon":"","ip":"","server_name":server_name,"channel_id0":"","channel_id1":"","msg0":"","msg1":"","v_channel":""}
-  
-  guild_obj = db.child("Servers").child(guild_id).get()
-  if guild_obj.val() is None:
-    db.child("Servers").child(guild_id).set(data)
-
-def update_by_data(guild_id,data):
-  db.child("Servers").child(guild_id).update(data)
-
-def get_info_by_data(guild_id,info):
-  data = db.child("Servers").child(guild_id).get()
-  data = data.val()
-  for key in data:
-    for i in info:
-      if key == i:
-        info[i] = data[key]
-  return info
-
-def status_update(guild_id,channel0,msg0,msg1):
-  guild_id,channel0,msg0,msg1 = str(guild_id),str(channel0),str(msg0),str(msg1)
-  data = {"channel_id0":channel0,"msg0":msg0,"msg1":msg1}
-  db.child("Servers").child(guild_id).update(data)
-
-def get_information(guild_id):
-  data = db.child("Servers").child(guild_id).get()
-  data = data.val()
-  return data["title"],data["icon"],data["ip"]
-
-def del_db(guild_id):
-  db.child("Servers").child(guild_id).remove()
+    data = {"title":"","icon":"","ip":"","server_name":server_name,"channel_id0":"","channel_id1":"","msg0":"","msg1":"","v_channel":""}
+    guild_obj = db.child("Servers").child(self.guild_id).get()
+    if guild_obj.val() is None:
+      db.child("Servers").child(self.guild_id).set(data)
+##
+  def update_by_data(self,data):
+    db.child("Servers").child(self.guild_id).update(data)
+##
+  def info_by_data(self,information):
+    data = db.child("Servers").child(self.guild_id).get()
+    db_keys = data.val()
+    for key in db_keys:
+      for item in information:
+        if key == item:
+          information[item] = data[key]
+    return information
+##
+  def status_update(self,channel0,msg0,msg1): # NOT USED NEED TO CHECK
+    self.guild_id,channel0,msg0,msg1 = str(self.guild_id),str(channel0),str(msg0),str(msg1)
+    data = {"channel_id0":channel0,"msg0":msg0,"msg1":msg1}
+    db.child("Servers").child(self.guild_id).update(data)
+##
+  def config_info(self):
+    data = db.child("Servers").child(self.guild_id).get()
+    data = data.val()
+    return data["title"],data["icon"],data["ip"]
+##
+  def del_server(self):
+    db.child("Servers").child(self.guild_id).remove()
 
 

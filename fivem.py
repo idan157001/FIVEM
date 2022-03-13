@@ -3,98 +3,15 @@ import os
 import json
 import time
 from datetime import datetime,date
-import discord
+import core
 from discord.ext import commands,tasks
 from json import JSONDecodeError
-from firebase import *
 import aiohttp
 import random
-class Server_info():
-    def __init__(self,ip):
-        self.ip = ip
-
-    async def send_request(self):
-        x = [f'http://{self.ip}/players.json',f'http://{self.ip}/info.json']
-        req_players,req_server_info= "",""
-        try:
-            async with aiohttp.ClientSession() as session:
-                for i in x:  
-                    async with session.get(i,timeout=1) as resp:
-                        resp = await resp.read()
-                        resp = json.loads(resp)
-                        if i.endswith("players.json"):
-                            req_players = resp
-                        else:
-                            req_server_info = resp
-                            for item in req_server_info:
-                                if item == 'vars':
-                                    max_players = req_server_info['vars']['sv_maxClients']
-            
-            return req_players,max_players
-                   
-        
-        
-        except Exception as e:
-            return None,None
-            
-
-    def build_form(self,req_json):
-        info = {"id":[],"name":[],"dis":[]}
-        f_id,f_name,f_dis = "","",""
-        p = list()
-        
-
-        if req_json == []:
-            return "None","None","None","0"
-
-        for item in req_json:
-            id = item['id']
-            name = (item['name'])
-            #ping = (item['ping'])
-            for i in item['identifiers']:
-                if 'discord' in i:
-                    dis_id = str(i).split(':')[1]
-                    
-                    discord = f'<@{dis_id}>'
-
-            p.append(f'{id}: {name} {discord} ')
-        
-        sort = sorted(p,key=lambda x:int(x.split(':')[0]))
-        for i in sort:
-            info["id"].append(i.split(':')[0])
-            info["name"].append(i.split(':')[1].split("<")[0])
-            info["dis"].append(i.split()[-1])
-
-        for i in info["id"]:
-            t = len(f"**{i}**\n")
-            if len(f_id)+t < 1024:
-                f_id+= f"**{i}**\n"
-            else:
-                break
-
-        for i in info["name"]:
-            if len(f_name)+len(f"{i}\n") < 1024:
-                f_name+=f"{i}\n"
-            else:
-                break
-        for i in info["dis"]:
-            if len(f_dis)+len(f"{i}\n") < 1024:
-                f_dis+=f"{i}\n"
-            else:
-                break
-
-        
-        length = len(sort)
-        return f_id,f_name,f_dis,length
-        
-    def caculate_space(self,players_length,max_players):
-        try:
-            players_length,max_players = int(players_length),int(max_players)
-            precent = (round((players_length/max_players)*100))
-            return precent
-        except:
-            pass
-
+#
+from firebase import FireBase_DB as DB
+from core import Server_info
+#
 
 client = commands.Bot(command_prefix='f!')
 client.remove_command('help')
@@ -105,35 +22,33 @@ DEV = "Flash_Bot"
 @client.event
 async def on_guild_remove(guild):
     servers = 0
-    for g in client.guilds:
+    for _ in client.guilds:
         servers+= 1
-    del_db(str(guild.id))
-    await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}")) 
+
+    DB(guild.id).del_server()
+    await client.change_presence(status=core.Status.online, activity=core.Activity(type=core.ActivityType.watching, name=f"Servers:{servers}")) 
     
 @client.event
 async def on_guild_join(guild):
     global flash
-    try:
-        for guild in client.guilds:
-            create_table(guild.id,guild.name)
-        
-        
-        
-    except:pass
+    db = DB(guild.id)   
+         
+    db.add_new_server(guild.name)
+       
     servers = 0
-    for g in client.guilds:
+    for _ in client.guilds:
         servers+= 1
-    await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}")) 
+    await client.change_presence(status=core.Status.online, activity=core.Activity(type=core.ActivityType.watching, name=f"Servers:{servers}")) 
     try:
         config = await guild.create_text_channel(name="・flash_bot") # text channel
         flash = await guild.create_voice_channel(name="・Flash_Bot") # voice channel
-        update_by_data(guild.id,{"v_channel":f"{flash.id}"})
+        db.update_by_data({"v_channel":f"{flash.id}"})
         x = guild.me.guild_permissions
         if x.manage_channels == True and x.send_messages == True  and x.read_messages == True  and x.view_channel == True and x.manage_messages == True:
             pass
         else:
             print("dont have permission")
-        embed = discord.Embed(title=f'Thanks for inviting me to your server!',description="I am FiveM bot\n I am here to help you with FiveM status\n\
+        embed = core.Embed(title=f'Thanks for inviting me to your server!',description="I am FiveM bot\n I am here to help you with FiveM status\n\
                                                                                             This is FiveM Status project that we developed for FiveM players\n\
                                                                                             Have Fun ;)\n\
                                                                                             It should be noted that this is **Beta Project**\n\
@@ -146,11 +61,7 @@ async def on_guild_join(guild):
         await help(config)
         await config.set_permissions(guild.default_role, view_channel=False)
         
-        
 
-
-
-        
     except commands.errors.CommandInvokeError:
         await config.send("Missing Permissions")
     except Exception as e:
@@ -159,7 +70,7 @@ async def on_guild_join(guild):
 @client.command()
 @commands.has_permissions(administrator = True)
 async def help(ctx):
-    embed = discord.Embed(title=f'Fivem Status',timestamp=datetime.utcnow(), color=84848)
+    embed = core.Embed(title=f'Fivem Status',timestamp=datetime.utcnow(), color=84848)
     embed.add_field(name="**f!start**", value="Select Channels", inline=False)
     embed.add_field(name="**Information**", value="``f!config``\n``f!config info``\n``f!config title``\n``f!config ip``\n``f!config icon``", inline=False)
     embed.set_footer(text=f'{DEV} | Last Updated:')
@@ -170,27 +81,23 @@ async def help(ctx):
 async def on_ready():
     await voice_connect()
     servers = 0
-    for g in client.guilds:
+    for _ in client.guilds:
         servers+= 1
         
-        
-    await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}"))
+    await client.change_presence(status=core.Status.online, activity=core.Activity(type=core.ActivityType.watching, name=f"Servers:{servers}"))
     print('Connected')
-    await asyncio.sleep(3)
-    
-    
-    
+    await asyncio.sleep(3)    
     while True:
         
         for guild in client.guilds:
             guild = guild
             guild_id = guild.id
-            
-
+        
             try:   
-                
-                info_channels = get_status_info(guild_id)
-                title_name,icon,IP = get_information(guild_id)
+                db = DB(guild_id)
+
+                info_channels = db.channels_id_info
+                title_name,icon,IP = db.config_info
                 server = Server_info(IP)
                 req_json,max_players = await server.send_request()
 
@@ -209,7 +116,7 @@ async def on_ready():
                     if req_json is None: 
                             try:
                                 #Offline
-                                embed = discord.Embed(title="``👥`` ``Players: [0/0]``\n``🔴`` ``Status`` - Server Offline ",description="", colour=discord.Colour.red(),timestamp=datetime.utcnow())
+                                embed = core.Embed(title="``👥`` ``Players: [0/0]``\n``🔴`` ``Status`` - Server Offline ",description="", colour=core.Colour.red(),timestamp=datetime.utcnow())
                                 embed.set_thumbnail(url=f"{icon}")
                                 embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
                                 embed.set_footer(text=f'{DEV} | Last Updated:', icon_url=f"{icon}")
@@ -217,16 +124,16 @@ async def on_ready():
                                 
 
                                 #################################
-                                embed = discord.Embed(title=f"**{title_name} information**", colour=discord.Colour.red(),timestamp=datetime.utcnow())
+                                embed = core.Embed(title=f"**{title_name} information**", colour=core.Colour.red(),timestamp=datetime.utcnow())
                                 embed.set_thumbnail(url=f"{icon}")
                                 embed.set_footer(text=f'{DEV} | Last Updated:', icon_url=f"{icon}")
                                 embed.add_field(name=f"``🔴`` ``Status``\n``👥`` ``Players: Server Offline ``", value=f"``🌐`` ``IP-{IP}``\n  ")
                                 await information_msg.edit(embed=embed)
-                            except discord.errors.NotFound:
+                            except core.errors.NotFound:
                                 pass
-                            except discord.errors.HTTPException:
+                            except core.errors.HTTPException:
                                 #await msg.channel.send("Config Icon Is Wrong\nChanged to Default!")
-                                update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
+                                db.update_by_data({"icon":""})#config icon error change it do default ""
                             except Exception as e:
                                 pass
                     
@@ -248,7 +155,7 @@ async def on_ready():
                                 
                             
                             #await guild.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"🐌[{players_length}/{max_players}] ({guild.member_count})"))
-                            embed = discord.Embed(title=TITLE, colour=discord.Colour.green(), timestamp=datetime.utcnow())
+                            embed = core.Embed(title=TITLE, colour=core.Colour.green(), timestamp=datetime.utcnow())
                             embed.set_footer(text=f'{DEV} | Last Updated:', icon_url=f"{icon}")
                             embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
                             embed.set_thumbnail(url=f"{icon}")
@@ -263,17 +170,17 @@ async def on_ready():
 
 
                             #########################
-                            embed = discord.Embed(title=f"Status Information", colour=discord.Colour.green(), timestamp=datetime.utcnow())
+                            embed = core.Embed(title=f"Status Information", colour=core.Colour.green(), timestamp=datetime.utcnow())
                             embed.add_field(name=f"``🟢`` ``Status``\n``👥`` ``Players: [{players_length}/{max_players}]``\n``📉`` ``Empty Slots: [{int(max_players)-int(players_length)}]``", value=f"``🌐`` ``IP- {IP}``  ")
                             embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
                             embed.set_thumbnail(url=f"{icon}")
                             embed.set_footer(text=f'{DEV} | Last Updated:', icon_url=f"{icon}")
                             await information_msg.edit(embed=embed)
-                        except discord.errors.NotFound:
+                        except core.errors.NotFound:
                             pass
-                        except discord.errors.HTTPException:
+                        except core.errors.HTTPException:
                             #await msg.channel.send("Config Icon Is Wrong\n\nChanged to Default!")
-                            update_by_data(guild.id,{"icon":""})#config icon error change it do default ""
+                            db.update_by_data({"icon":""})#config icon error change it do default ""
                             await asyncio.sleep(2)
                         except Exception as e:
                             pass
@@ -289,7 +196,7 @@ async def on_ready():
 async def start(ctx):
     ch_id = ctx.message.channel.id
     channel0 = client.get_channel(ch_id)
-    
+    db = DB(ctx.guild.id)
     
 
     def check(message):
@@ -324,7 +231,7 @@ async def start(ctx):
             msg0 = await chann0.send(".")
             msg1 = await chann1.send(".")
             data = {"channel_id0":c0,"msg0":msg0.id,"msg1":msg1.id,"channel_id1":c1}
-            update_by_data(ctx.guild.id,data)
+            db.update_by_data(data)
             await ctx.send("Updated",delete_after=2)
     
     
@@ -344,6 +251,8 @@ async def start(ctx: commands.Context, error: commands.CommandError):
 @client.command()
 @commands.has_permissions(administrator = True)
 async def config(ctx,info):
+    db = DB(ctx.message.guild.id)
+
     messages = ["I Updated your data 😉","Your data has been updated","Successfully updated","Got it 😉"]
     updated = random.choice(messages)
     def check(message):
@@ -359,7 +268,7 @@ async def config(ctx,info):
             data = {"title":""}
         else:
             data = {"title":title.content}
-        update_by_data(guild,data)
+        db.update_by_data(data)
         await ctx.send(f"{updated}",delete_after=2)
 
     elif info.lower() == "icon":
@@ -373,20 +282,20 @@ async def config(ctx,info):
             return
         else:
             data = {"icon":icon.content}
-        update_by_data(guild,data)
+        db.update_by_data(data)
         await ctx.send(f"{updated}",delete_after=2)
 
     elif info.lower() == "ip":
         await ctx.send("Enter Status IP")
         ip = await client.wait_for("message",check=check)
         data = {"ip":ip.content}
-        update_by_data(guild,data)
+        db.update_by_data(data)
         await ctx.send(f"{updated}",delete_after=2)
     if info.lower() =="info":
         try:
-            data = get_info_by_data(ctx.guild.id,{"title":"","ip":"","icon":""})
+            data = db.info_by_data({"title":"","ip":"","icon":""})
 
-            embed = discord.Embed(title="Config",description="", colour=discord.Colour.red())
+            embed = core.Embed(title="Config",description="", colour=core.Colour.red())
             embed.add_field(name="**Title**",value=f"``{data['title']  if len(data['title']) >= 1 else 'None'}``",inline=False)
             embed.add_field(name="**Ip**",value=f"``{data['ip']  if len(data['ip']) >= 1 else 'None'}``",inline=False)
             embed.add_field(name="**Icon**",value=f"``{data['icon']  if len(data['icon']) >= 1 else 'None'}``",inline=False)
@@ -396,18 +305,20 @@ async def config(ctx,info):
 @config.error        
 async def config_error(ctx: commands.Context, error: commands.CommandError):
     if isinstance(error,commands.errors.MissingRequiredArgument):
-        data = get_info_by_data(ctx.guild.id,{"title":"","ip":"","icon":""})
+        db = DB(ctx.guild.id)
+        data = db.info_by_data({"title":"","ip":"","icon":""})
         
-        embed = discord.Embed(title="Config",description="", colour=discord.Colour.red())
+        embed = core.Embed(title="Config",description="", colour=core.Colour.red())
         embed.add_field(name="f!config title",value=f"Title of the server",inline=False)
         embed.add_field(name="f!config ip",value=f"ip of the server",inline=False)
         embed.add_field(name="f!config icon",value=f"icon of the server",inline=False)
         await ctx.send(embed=embed)
     else:
         pass
+
 @client.event    
 async def on_command_error(ctx,error):
-    if isinstance(error,discord.errors.Forbidden):
+    if isinstance(error,core.errors.Forbidden):
         await ctx.send("I dont have the permission to do that")
     pass
 
@@ -424,10 +335,11 @@ async def leave(ctx,id):
 async def voice_connect():
     for guild in client.guilds:
         try: 
-            voice_id = get_info_by_data(str(guild.id),{"v_channel":""})
+            db = DB(guild.id)
+            voice_id = db.info_by_data({"v_channel":""})
             if voice_id["v_channel"] != "":
                 c = guild.get_channel(int(voice_id["v_channel"])) 
-                connected = (discord.utils.get(client.voice_clients, guild=guild))
+                connected = (core.utils.get(client.voice_clients, guild=guild))
                 if connected is None:
                     await c.connect()
                     
