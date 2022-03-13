@@ -3,7 +3,7 @@ import os
 import json
 import time
 from datetime import datetime,date
-import core
+import discord
 from discord.ext import commands,tasks
 from json import JSONDecodeError
 import aiohttp
@@ -26,7 +26,7 @@ async def on_guild_remove(guild):
         servers+= 1
 
     DB(guild.id).del_server()
-    await client.change_presence(status=core.Status.online, activity=core.Activity(type=core.ActivityType.watching, name=f"Servers:{servers}")) 
+    await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}")) 
     
 @client.event
 async def on_guild_join(guild):
@@ -38,7 +38,7 @@ async def on_guild_join(guild):
     servers = 0
     for _ in client.guilds:
         servers+= 1
-    await client.change_presence(status=core.Status.online, activity=core.Activity(type=core.ActivityType.watching, name=f"Servers:{servers}")) 
+    await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}")) 
     try:
         config = await guild.create_text_channel(name="・flash_bot") # text channel
         flash = await guild.create_voice_channel(name="・Flash_Bot") # voice channel
@@ -48,7 +48,7 @@ async def on_guild_join(guild):
             pass
         else:
             print("dont have permission")
-        embed = core.Embed(title=f'Thanks for inviting me to your server!',description="I am FiveM bot\n I am here to help you with FiveM status\n\
+        embed = discord.Embed(title=f'Thanks for inviting me to your server!',description="I am FiveM bot\n I am here to help you with FiveM status\n\
                                                                                             This is FiveM Status project that we developed for FiveM players\n\
                                                                                             Have Fun ;)\n\
                                                                                             It should be noted that this is **Beta Project**\n\
@@ -70,7 +70,7 @@ async def on_guild_join(guild):
 @client.command()
 @commands.has_permissions(administrator = True)
 async def help(ctx):
-    embed = core.Embed(title=f'Fivem Status',timestamp=datetime.utcnow(), color=84848)
+    embed = discord.Embed(title=f'Fivem Status',timestamp=datetime.utcnow(), color=84848)
     embed.add_field(name="**f!start**", value="Select Channels", inline=False)
     embed.add_field(name="**Information**", value="``f!config``\n``f!config info``\n``f!config title``\n``f!config ip``\n``f!config icon``", inline=False)
     embed.set_footer(text=f'{DEV} | Last Updated:')
@@ -84,7 +84,7 @@ async def on_ready():
     for _ in client.guilds:
         servers+= 1
         
-    await client.change_presence(status=core.Status.online, activity=core.Activity(type=core.ActivityType.watching, name=f"Servers:{servers}"))
+    await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"Servers:{servers}"))
     print('Connected')
     await asyncio.sleep(3)    
     while True:
@@ -116,7 +116,7 @@ async def on_ready():
                     if req_json is None: 
                             try:
                                 #Offline
-                                embed = core.Embed(title="``👥`` ``Players: [0/0]``\n``🔴`` ``Status`` - Server Offline ",description="", colour=core.Colour.red(),timestamp=datetime.utcnow())
+                                embed = discord.Embed(title="``👥`` ``Players: [0/0]``\n``🔴`` ``Status`` - Server Offline ",description="", colour=discord.Colour.red(),timestamp=datetime.utcnow())
                                 embed.set_thumbnail(url=f"{icon}")
                                 embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
                                 embed.set_footer(text=f'{DEV} | Last Updated:', icon_url=f"{icon}")
@@ -124,14 +124,14 @@ async def on_ready():
                                 
 
                                 #################################
-                                embed = core.Embed(title=f"**{title_name} information**", colour=core.Colour.red(),timestamp=datetime.utcnow())
+                                embed = discord.Embed(title=f"**{title_name} information**", colour=discord.Colour.red(),timestamp=datetime.utcnow())
                                 embed.set_thumbnail(url=f"{icon}")
                                 embed.set_footer(text=f'{DEV} | Last Updated:', icon_url=f"{icon}")
                                 embed.add_field(name=f"``🔴`` ``Status``\n``👥`` ``Players: Server Offline ``", value=f"``🌐`` ``IP-{IP}``\n  ")
                                 await information_msg.edit(embed=embed)
-                            except core.errors.NotFound:
+                            except discord.errors.NotFound:
                                 pass
-                            except core.errors.HTTPException:
+                            except discord.errors.HTTPException:
                                 #await msg.channel.send("Config Icon Is Wrong\nChanged to Default!")
                                 db.update_by_data({"icon":""})#config icon error change it do default ""
                             except Exception as e:
@@ -155,7 +155,7 @@ async def on_ready():
                                 
                             
                             #await guild.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name=f"🐌[{players_length}/{max_players}] ({guild.member_count})"))
-                            embed = core.Embed(title=TITLE, colour=core.Colour.green(), timestamp=datetime.utcnow())
+                            embed = discord.Embed(title=TITLE, colour=discord.Colour.green(), timestamp=datetime.utcnow())
                             embed.set_footer(text=f'{DEV} | Last Updated:', icon_url=f"{icon}")
                             embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
                             embed.set_thumbnail(url=f"{icon}")
@@ -170,15 +170,15 @@ async def on_ready():
 
 
                             #########################
-                            embed = core.Embed(title=f"Status Information", colour=core.Colour.green(), timestamp=datetime.utcnow())
+                            embed = discord.Embed(title=f"Status Information", colour=discord.Colour.green(), timestamp=datetime.utcnow())
                             embed.add_field(name=f"``🟢`` ``Status``\n``👥`` ``Players: [{players_length}/{max_players}]``\n``📉`` ``Empty Slots: [{int(max_players)-int(players_length)}]``", value=f"``🌐`` ``IP- {IP}``  ")
                             embed.set_author(name =f"{title_name}", icon_url=f"{icon}")
                             embed.set_thumbnail(url=f"{icon}")
                             embed.set_footer(text=f'{DEV} | Last Updated:', icon_url=f"{icon}")
                             await information_msg.edit(embed=embed)
-                        except core.errors.NotFound:
+                        except discord.errors.NotFound:
                             pass
-                        except core.errors.HTTPException:
+                        except discord.errors.HTTPException:
                             #await msg.channel.send("Config Icon Is Wrong\n\nChanged to Default!")
                             db.update_by_data({"icon":""})#config icon error change it do default ""
                             await asyncio.sleep(2)
@@ -295,7 +295,7 @@ async def config(ctx,info):
         try:
             data = db.info_by_data({"title":"","ip":"","icon":""})
 
-            embed = core.Embed(title="Config",description="", colour=core.Colour.red())
+            embed = discord.Embed(title="Config",description="", colour=discord.Colour.red())
             embed.add_field(name="**Title**",value=f"``{data['title']  if len(data['title']) >= 1 else 'None'}``",inline=False)
             embed.add_field(name="**Ip**",value=f"``{data['ip']  if len(data['ip']) >= 1 else 'None'}``",inline=False)
             embed.add_field(name="**Icon**",value=f"``{data['icon']  if len(data['icon']) >= 1 else 'None'}``",inline=False)
@@ -308,7 +308,7 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
         db = DB(ctx.guild.id)
         data = db.info_by_data({"title":"","ip":"","icon":""})
         
-        embed = core.Embed(title="Config",description="", colour=core.Colour.red())
+        embed = discord.Embed(title="Config",description="", colour=discord.Colour.red())
         embed.add_field(name="f!config title",value=f"Title of the server",inline=False)
         embed.add_field(name="f!config ip",value=f"ip of the server",inline=False)
         embed.add_field(name="f!config icon",value=f"icon of the server",inline=False)
@@ -318,7 +318,7 @@ async def config_error(ctx: commands.Context, error: commands.CommandError):
 
 @client.event    
 async def on_command_error(ctx,error):
-    if isinstance(error,core.errors.Forbidden):
+    if isinstance(error,discord.errors.Forbidden):
         await ctx.send("I dont have the permission to do that")
     pass
 
@@ -339,7 +339,7 @@ async def voice_connect():
             voice_id = db.info_by_data({"v_channel":""})
             if voice_id["v_channel"] != "":
                 c = guild.get_channel(int(voice_id["v_channel"])) 
-                connected = (core.utils.get(client.voice_clients, guild=guild))
+                connected = (discord.utils.get(client.voice_clients, guild=guild))
                 if connected is None:
                     await c.connect()
                     
