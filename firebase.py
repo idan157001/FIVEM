@@ -64,6 +64,7 @@ def get_info_by_data(guild_id,info):
       if key == i:
         info[i] = data[key]
   return info
+
 def status_update(guild_id,channel0,msg0,msg1):
   guild_id,channel0,msg0,msg1 = str(guild_id),str(channel0),str(msg0),str(msg1)
   data = {"channel_id0":channel0,"msg0":msg0,"msg1":msg1}
@@ -78,4 +79,3 @@ def del_db(guild_id):
   db.child("Servers").child(guild_id).remove()
 
 
-create_table("698299485570203658","idan")
