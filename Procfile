@@ -1,1 +1,1 @@
-worker: python fivem.py
+worker: python run.py

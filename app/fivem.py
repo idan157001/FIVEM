@@ -1,16 +1,12 @@
 import asyncio
 import os
-import json
-import time
-from datetime import datetime,date
+from datetime import datetime
 import discord
-from discord.ext import commands,tasks
-from json import JSONDecodeError
-import aiohttp
+from discord.ext import commands
 import random
 #
-from firebase import FireBase_DB as DB
-from core import Server_info
+from app.firebase import FireBase_DB as DB
+from app.core import Server_info
 #
 
 client = commands.Bot(command_prefix='f!')
@@ -96,8 +92,8 @@ async def on_ready():
             try:   
                 db = DB(guild_id)
 
-                info_channels = db.channels_id_info
-                title_name,icon,IP = db.config_info
+                info_channels = db.channels_id_info()
+                title_name,icon,IP = db.config_info()
                 server = Server_info(IP)
                 req_json,max_players = await server.send_request()
 
@@ -136,11 +132,9 @@ async def on_ready():
                                 db.update_by_data({"icon":""})#config icon error change it do default ""
                             except Exception as e:
                                 pass
-                    
-                        
+                
                     else:
                         try:
-                            
                             
                             #Online
                         
@@ -190,7 +184,7 @@ async def on_ready():
                     pass
             
             except Exception as e:
-                print(e)
+                pass
 @client.command()
 @commands.has_permissions(administrator = True)
 async def start(ctx):
@@ -353,6 +347,6 @@ async def voice_connect():
             pass
 
 
-TOKEN = os.getenv("TOKEN")
-client.run(TOKEN)
+
+
 

@@ -1,8 +1,6 @@
 import requests
-from requests.exceptions import ConnectionError
 import aiohttp
 import json
-from json import JSONDecodeError
 
 
 

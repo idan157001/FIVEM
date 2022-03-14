@@ -1,7 +1,6 @@
 import pyrebase
 import os
-from datetime import datetime,date
-from discord.ext import commands,tasks
+
 
 
 
@@ -25,13 +24,12 @@ firebaseConfig = {
     "appId": appId,
     "databaseURL": databaseURL
   }
+
 firebase = pyrebase.initialize_app(firebaseConfig)
 db = firebase.database()
 auth = firebase.auth()
 
 x = auth.sign_in_with_email_and_password(email,password)
-
-
 
 ############
 class FireBase_DB:
@@ -43,7 +41,7 @@ class FireBase_DB:
     data = db.child("Servers").child(self.guild_id).get()
     data = data.val()
     return data["channel_id0"],data["channel_id1"],data["msg0"],data["msg1"]
-  ##
+  
   def add_new_server(self,server_name):
     """Adding new server to db initilize attributes """
 
@@ -51,10 +49,10 @@ class FireBase_DB:
     guild_obj = db.child("Servers").child(self.guild_id).get()
     if guild_obj.val() is None:
       db.child("Servers").child(self.guild_id).set(data)
-##
+
   def update_by_data(self,data):
     db.child("Servers").child(self.guild_id).update(data)
-##
+
   def info_by_data(self,information):
     data = db.child("Servers").child(self.guild_id).get()
     db_keys = data.val()
@@ -63,17 +61,17 @@ class FireBase_DB:
         if key == item:
           information[item] = db_keys[key]
     return information
-##
-  def status_update(self,channel0,msg0,msg1): # NOT USED NEED TO CHECK
+
+  def status_update(self,channel0,msg0,msg1): # Function not in use need to check if needed
     self.guild_id,channel0,msg0,msg1 = str(self.guild_id),str(channel0),str(msg0),str(msg1)
     data = {"channel_id0":channel0,"msg0":msg0,"msg1":msg1}
     db.child("Servers").child(self.guild_id).update(data)
-##
+
   def config_info(self):
     data = db.child("Servers").child(self.guild_id).get()
     data = data.val()
     return data["title"],data["icon"],data["ip"]
-##
+
   def del_server(self):
     db.child("Servers").child(self.guild_id).remove()
 
